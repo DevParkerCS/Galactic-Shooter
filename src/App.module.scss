@@ -1,22 +1,25 @@
+body {
+  overflow: hidden;
+  background-image: url("./Assets/stars.jpg");
+  cursor: url("./Assets/crosshair.png") 60 60, auto;
+}
+
 .box {
-  width: 15rem;
-  height: 10rem;
+  width: 10rem;
+  height: 7rem;
   position: absolute;
   top: 50%;
   background-color: transparent;
   transform: translate(-50%, -50%);
-  border: 2px dashed black;
+  border: 2px dashed white;
   z-index: -1;
 }
 
-.ufo {
-  background-color: black;
-  width: 15rem;
+.player {
+  width: 10%;
   height: 10rem;
-  background: url("./Assets/arrow.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
+  transform-origin: bottom;
   position: absolute;
   left: 50%;
-  top: 50%;
+  bottom: -3rem;
 }

@@ -1,11 +1,13 @@
 import styles from "./App.module.scss";
 import { useState, useRef, useEffect } from "react";
 import sound from "./Assets/laser.mp3";
+import PlayerImg from "./Assets/DurrrSpaceShip.png";
 
 const laserAudio = new Audio(sound);
 
 function App() {
   const [position, setPosition] = useState({ left: 50, top: 50 });
+  const [round, setRound] = useState(1);
 
   const handleMouseMove = (e: any) => {
     setPosition({ left: e.clientX, top: e.clientY });
@@ -15,6 +17,8 @@ function App() {
     laserAudio.play();
   };
 
+  let ufos: JSX.Element[] = [<enemy />];
+
   window.addEventListener("mousemove", handleMouseMove);
 
   return (
@@ -23,20 +27,23 @@ function App() {
         style={{ left: position.left, top: position.top }}
         className={styles.box}
       ></div>
-      <UFO position={position} />
+      <Player position={position} />
     </div>
   );
 }
 
-const UFO = ({ position }: { position: { left: number; top: number } }) => {
+const Player = ({ position }: { position: { left: number; top: number } }) => {
   const [rotation, setRotation] = useState(0);
-  const ufoRef = useRef<HTMLDivElement>(null);
+  const PlayerRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (ufoRef.current == null) return;
-    const ufo = ufoRef.current.getBoundingClientRect();
+    if (PlayerRef.current == null) return;
+    const Player = PlayerRef.current.getBoundingClientRect();
     setRotation(
-      -Math.atan2((ufo.left - position.left) * 1.0, ufo.top - position.top) *
+      -Math.atan2(
+        (Player.left - position.left) * 1.0,
+        Player.top - position.top
+      ) *
         (180 / Math.PI)
     );
   }, [position]);
@@ -45,12 +52,13 @@ const UFO = ({ position }: { position: { left: number; top: number } }) => {
     e.target.style.display = "none";
   };
   return (
-    <div
-      ref={ufoRef}
-      className={styles.ufo}
+    <img
+      ref={PlayerRef}
+      src={PlayerImg}
+      className={styles.player}
       onClick={handleClick}
       style={{ rotate: rotation + "deg" }}
-    ></div>
+    ></img>
   );
 };
 
