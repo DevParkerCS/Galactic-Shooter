@@ -2,11 +2,13 @@ import styles from "./App.module.scss";
 import { useState, useRef, useEffect } from "react";
 import sound from "./Assets/laser.mp3";
 import PlayerImg from "./Assets/DurrrSpaceShip.png";
+import enemyImg from "./Assets/shipBlue_manned.png";
 
 const laserAudio = new Audio(sound);
 
 function App() {
   const [position, setPosition] = useState({ left: 50, top: 50 });
+  const [enemies, setEnemies] = useState<JSX.Element[]>([<Enemy />]);
   const [round, setRound] = useState(1);
 
   const handleMouseMove = (e: any) => {
@@ -17,17 +19,24 @@ function App() {
     laserAudio.play();
   };
 
-  let ufos: JSX.Element[] = [<enemy />];
+  useEffect(() => {
+    createEnemies();
+  }, [round]);
+
+  const createEnemies = () => {
+    for (let i = 0; i < 10 * round; i++) {
+      setEnemies([...enemies, <Enemy />]);
+    }
+  };
 
   window.addEventListener("mousemove", handleMouseMove);
 
   return (
     <div className={styles.gameWrapper} onClick={laserClick}>
-      <div
-        style={{ left: position.left, top: position.top }}
-        className={styles.box}
-      ></div>
       <Player position={position} />
+      {enemies.map((e) => {
+        return e;
+      })}
     </div>
   );
 }
@@ -59,6 +68,19 @@ const Player = ({ position }: { position: { left: number; top: number } }) => {
       onClick={handleClick}
       style={{ rotate: rotation + "deg" }}
     ></img>
+  );
+};
+
+const Enemy = () => {
+  const handleClick = (e: any) => {
+    setTimeout(() => {
+      e.target.style.display = "none";
+    }, 500);
+  };
+  return (
+    <div className={styles.enemyWrapper}>
+      <img onClick={handleClick} src={enemyImg} className={styles.enemy}></img>
+    </div>
   );
 };
 

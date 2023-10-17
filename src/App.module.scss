@@ -1,7 +1,6 @@
 body {
   overflow: hidden;
   background-image: url("./Assets/stars.jpg");
-  cursor: url("./Assets/crosshair.png") 60 60, auto;
 }
 
 .box {
@@ -13,6 +12,11 @@ body {
   transform: translate(-50%, -50%);
   border: 2px dashed white;
   z-index: -1;
+}
+
+.gameWrapper {
+  cursor: url("./Assets/crosshair.png") 60 60, auto;
+  height: 100vh;
 }
 
 .player {
