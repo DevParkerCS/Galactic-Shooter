@@ -109,8 +109,10 @@ type EnemyProps = {
 };
 
 const Enemy = ({ setEnemiesLeft, setLives, setScore }: EnemyProps) => {
-  const [position, setPosition] = useState({ left: 0, top: -10 });
+  const [leftPosition, setLeftPosition] = useState(0);
   const [isAlive, setIsAlive] = useState(true);
+  const [reachedBottom, setReachedBottom] = useState(false);
+  const enemyRef = useRef<HTMLImageElement>(null);
 
   const handleClick = (e: any) => {
     setIsAlive(false);
@@ -121,37 +123,30 @@ const Enemy = ({ setEnemiesLeft, setLives, setScore }: EnemyProps) => {
 
   const generateRandomPosition = () => {
     let positionx = Math.floor(Math.random() * 100);
-    setPosition({ left: positionx, top: 0 });
-  };
-
-  const moveDown = () => {
-    if (position.top < 100 && isAlive) {
-      setTimeout(() => {
-        setPosition((prevState) => {
-          return { left: prevState.left, top: prevState.top + 2 };
-        });
-      }, 100);
-    } else if (position.top >= 100 && isAlive) {
-      setLives((prevState) => prevState - 1);
-      setIsAlive(false);
-      setEnemiesLeft((prevState) => prevState - 1);
-    }
+    setLeftPosition(positionx);
   };
 
   useEffect(() => {
     generateRandomPosition();
+    setTimeout(() => {
+      setReachedBottom(true);
+    }, 6000);
   }, []);
 
   useEffect(() => {
-    moveDown();
-  }, [position]);
+    if (isAlive && reachedBottom) {
+      setLives((prevState) => prevState - 1);
+      setEnemiesLeft((prevState) => prevState - 1);
+    }
+  }, [reachedBottom]);
 
   return (
     <img
+      ref={enemyRef}
       onClick={handleClick}
       src={enemyImg}
       className={styles.enemy}
-      style={{ left: position.left + `%`, top: position.top + `%` }}
+      style={{ left: leftPosition + `%` }}
     ></img>
   );
 };

@@ -31,9 +31,10 @@ body {
 
 .enemy {
   position: absolute;
-  transition: top 0.5s ease;
   user-select: none;
   -webkit-user-drag: none;
+  animation: MoveEnemyDown 6s linear;
+  top: 100%;
 }
 
 .GUINav {
@@ -41,4 +42,13 @@ body {
   font-size: 2rem;
   pointer-events: none;
   user-select: none;
+}
+
+@keyframes MoveEnemyDown {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 100%;
+  }
 }
