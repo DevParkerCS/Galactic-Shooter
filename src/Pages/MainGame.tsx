@@ -11,6 +11,8 @@ function MainGame() {
   const [round, setRound] = useState(1);
   const [enemiesLeft, setEnemiesLeft] = useState(10 * round);
   const [lives, setLives] = useState(3);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
   const laserClick = async () => {
     laserAudio.play();
@@ -26,7 +28,12 @@ function MainGame() {
       setEnemies((prevState) => {
         return [
           ...prevState,
-          <Enemy key={i} setEnemiesLeft={setEnemiesLeft} setLives={setLives} />,
+          <Enemy
+            setScore={setScore}
+            key={i}
+            setEnemiesLeft={setEnemiesLeft}
+            setLives={setLives}
+          />,
         ];
       });
       await new Promise((res) => setTimeout(res, 500));
@@ -35,25 +42,28 @@ function MainGame() {
 
   useEffect(() => {
     // Check if enemies are all dead
-    if (enemiesLeft === 0) {
+    if (lives <= 0) {
+      setGameOver(true);
+    } else if (enemiesLeft === 0) {
       setRound((prevState) => {
         setEnemiesLeft(10 * (prevState + 1));
         return prevState + 1;
       });
     }
     // Check If Out Of Lives
-    if (lives < 0) {
-      console.log("game over");
-    }
   }, [enemiesLeft, lives]);
 
   return (
     <div className={styles.gameWrapper} onClick={laserClick}>
-      <button>Pause</button>
+      <GameNav score={score} lives={lives} />
       <Player />
-      {enemies.map((e) => {
-        return e;
-      })}
+      {gameOver ? (
+        <h1>Game Over</h1>
+      ) : (
+        enemies.map((e) => {
+          return e;
+        })
+      )}
     </div>
   );
 }
@@ -95,17 +105,18 @@ const Player = () => {
 type EnemyProps = {
   setEnemiesLeft: React.Dispatch<SetStateAction<number>>;
   setLives: React.Dispatch<SetStateAction<number>>;
+  setScore: React.Dispatch<SetStateAction<number>>;
 };
 
-const Enemy = ({ setEnemiesLeft, setLives }: EnemyProps) => {
+const Enemy = ({ setEnemiesLeft, setLives, setScore }: EnemyProps) => {
   const [position, setPosition] = useState({ left: 0, top: -10 });
   const [isAlive, setIsAlive] = useState(true);
 
   const handleClick = (e: any) => {
-    console.log(e.target);
     setIsAlive(false);
     e.target.style.display = "none";
     setEnemiesLeft((prevState) => prevState - 1);
+    setScore((prevState) => prevState + 100);
   };
 
   const generateRandomPosition = () => {
@@ -145,10 +156,16 @@ const Enemy = ({ setEnemiesLeft, setLives }: EnemyProps) => {
   );
 };
 
-const gameNav = () => {
+type GameNavProps = {
+  score: number;
+  lives: number;
+};
+
+const GameNav = ({ score, lives }: GameNavProps) => {
   return (
     <div className={styles.GUINav}>
-      <h2>Score: {}</h2>
+      <h2>Score: {score}</h2>
+      <h2>Lives: {lives}</h2>
     </div>
   );
 };
