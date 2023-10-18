@@ -32,4 +32,6 @@ body {
 .enemy {
   position: absolute;
   transition: top 0.5s ease;
+  user-select: none;
+  -webkit-user-drag: none;
 }

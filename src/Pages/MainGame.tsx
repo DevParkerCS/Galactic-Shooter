@@ -102,6 +102,7 @@ const Enemy = ({ setEnemiesLeft, setLives }: EnemyProps) => {
   const [isAlive, setIsAlive] = useState(true);
 
   const handleClick = (e: any) => {
+    console.log(e.target);
     setIsAlive(false);
     e.target.style.display = "none";
     setEnemiesLeft((prevState) => prevState - 1);
