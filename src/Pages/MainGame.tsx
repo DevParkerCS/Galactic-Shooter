@@ -58,7 +58,7 @@ function MainGame() {
       <GameNav score={score} lives={lives} />
       <Player />
       {gameOver ? (
-        <h1>Game Over</h1>
+        <h1 className={styles.gameOver}>Game Over</h1>
       ) : (
         enemies.map((e) => {
           return e;
@@ -74,23 +74,18 @@ const Player = () => {
   const PlayerRef = useRef<HTMLImageElement>(null);
 
   const handleMouseMove = (e: any) => {
-    setPosition({ left: e.clientX, top: e.clientY });
-  };
-
-  window.addEventListener("mousemove", handleMouseMove);
-
-  useEffect(() => {
     if (PlayerRef.current == null) return;
     const Player = PlayerRef.current.getBoundingClientRect();
     setRotation(
       // Calculate angle between Player ship and mouse to have ship point at cursor
-      -Math.atan2(
-        (Player.left - position.left) * 1.0,
-        Player.top - position.top
-      ) *
+      -Math.atan2((Player.left - e.clientX) * 1.0, Player.top - e.clientY) *
         (180 / Math.PI)
     );
-  }, [position]);
+  };
+
+  window.addEventListener("mousemove", handleMouseMove);
+
+  useEffect(() => {}, [position]);
 
   return (
     <img
