@@ -1,0 +1,44 @@
+.pageWrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  .title {
+    color: white;
+    font-size: 5rem;
+    text-align: center;
+  }
+
+  .btn {
+    width: 30%;
+    padding: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    margin: 0.2rem;
+  }
+}
+
+.volumeModal {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(black, 0.8), rgba(black, 0.8));
+
+  .modalTitle {
+    color: white;
+    font-size: 4rem;
+  }
+
+  .modalSubTitle {
+    color: white;
+    font-size: 3rem;
+  }
+}
