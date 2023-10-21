@@ -1,10 +1,17 @@
 import styles from "./MainGame.module.scss";
 import { useState, useRef, useEffect, SetStateAction } from "react";
-import sound from "../Assets/laser.mp3";
-import PlayerImg from "../Assets/DurrrSpaceShip.png";
-import enemyImg from "../Assets/shipBlue_manned.png";
+import sound from "../../Assets/laser.mp3";
+import PlayerImg from "../../Assets/DurrrSpaceShip.png";
+import enemyImg1 from "../../Assets/shipBlue_manned.png";
+import enemyImg2 from "../../Assets/shipBeige_manned.png";
+import enemyImg3 from "../../Assets/shipGreen_manned.png";
+import enemyImg4 from "../../Assets/shipPink_manned.png";
+import enemyImg5 from "../../Assets/shipYellow_manned.png";
 
-const laserAudio = new Audio(sound);
+import { useNavigate } from "react-router-dom";
+
+const LASER_AUDIO = new Audio(sound);
+const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
 
 function MainGame() {
   const [enemies, setEnemies] = useState<JSX.Element[]>([]);
@@ -13,9 +20,12 @@ function MainGame() {
   const [lives, setLives] = useState(3);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const navigate = useNavigate();
 
   const laserClick = async () => {
-    laserAudio.play();
+    if (sessionStorage.getItem("volumeOn") == "true") {
+      LASER_AUDIO.play();
+    }
   };
 
   useEffect(() => {
@@ -24,15 +34,20 @@ function MainGame() {
 
   const createEnemies = async () => {
     setEnemies([]);
-    for (let i = 0; i <= 10 * round; i++) {
+    for (let i = 0; i < 10 * round; i++) {
+      const imgIndex = Math.floor(Math.random() * 5);
+      const image = ENEMY_IMAGES[imgIndex];
       setEnemies((prevState) => {
         return [
           ...prevState,
           <Enemy
             setScore={setScore}
             key={i}
+            index={i}
+            setEnemies={setEnemies}
             setEnemiesLeft={setEnemiesLeft}
             setLives={setLives}
+            imageSrc={image}
           />,
         ];
       });
@@ -42,8 +57,9 @@ function MainGame() {
 
   useEffect(() => {
     // Check if enemies are all dead
-    if (lives <= 0) {
+    if (lives < 0) {
       setGameOver(true);
+      setEnemies([]);
     } else if (enemiesLeft === 0) {
       setRound((prevState) => {
         setEnemiesLeft(10 * (prevState + 1));
@@ -57,6 +73,7 @@ function MainGame() {
     <div className={styles.gameWrapper} onClick={laserClick}>
       <GameNav score={score} lives={lives} />
       <Player />
+      <button onClick={() => navigate("/")}>home</button>
       {gameOver ? (
         <h1 className={styles.gameOver}>Game Over</h1>
       ) : (
@@ -70,10 +87,9 @@ function MainGame() {
 
 const Player = () => {
   const [rotation, setRotation] = useState(0);
-  const [position, setPosition] = useState({ left: 50, top: 50 });
   const PlayerRef = useRef<HTMLImageElement>(null);
 
-  const handleMouseMove = (e: any) => {
+  window.onmouseup = (e) => {
     if (PlayerRef.current == null) return;
     const Player = PlayerRef.current.getBoundingClientRect();
     setRotation(
@@ -82,10 +98,6 @@ const Player = () => {
         (180 / Math.PI)
     );
   };
-
-  window.addEventListener("mousemove", handleMouseMove);
-
-  useEffect(() => {}, [position]);
 
   return (
     <img
@@ -101,48 +113,63 @@ type EnemyProps = {
   setEnemiesLeft: React.Dispatch<SetStateAction<number>>;
   setLives: React.Dispatch<SetStateAction<number>>;
   setScore: React.Dispatch<SetStateAction<number>>;
+  index: number;
+  setEnemies: React.Dispatch<SetStateAction<JSX.Element[]>>;
+  imageSrc: string;
 };
 
-const Enemy = ({ setEnemiesLeft, setLives, setScore }: EnemyProps) => {
+const Enemy = ({
+  setEnemiesLeft,
+  setLives,
+  setScore,
+  index,
+  setEnemies,
+  imageSrc,
+}: EnemyProps) => {
   const [leftPosition, setLeftPosition] = useState(0);
-  const [isAlive, setIsAlive] = useState(true);
-  const [reachedBottom, setReachedBottom] = useState(false);
   const enemyRef = useRef<HTMLImageElement>(null);
+  let timer = useRef<NodeJS.Timeout>();
+  const navigate = useNavigate();
 
   const handleClick = (e: any) => {
-    setIsAlive(false);
-    e.target.style.display = "none";
+    clearTimeout(timer.current);
     setEnemiesLeft((prevState) => prevState - 1);
     setScore((prevState) => prevState + 100);
+    setEnemies((prevState) => {
+      return prevState.filter((enemy) => {
+        return enemy.props.index !== index;
+      });
+    });
   };
 
   const generateRandomPosition = () => {
-    let positionx = Math.floor(Math.random() * 100);
+    let positionx = Math.floor(Math.random() * 95);
     setLeftPosition(positionx);
   };
 
   useEffect(() => {
     generateRandomPosition();
-    setTimeout(() => {
-      setReachedBottom(true);
-    }, 6000);
-  }, []);
-
-  useEffect(() => {
-    if (isAlive && reachedBottom) {
+    timer.current = setTimeout(() => {
       setLives((prevState) => prevState - 1);
       setEnemiesLeft((prevState) => prevState - 1);
+      setEnemies((prevState) => {
+        return prevState.filter((enemy) => {
+          return enemy.props.index !== index;
+        });
+      });
+    }, 6000);
+    if (sessionStorage.getItem("volumeOn") == null) {
+      navigate("/");
     }
-  }, [reachedBottom]);
+  }, []);
 
   return (
-    <img
+    <div
       ref={enemyRef}
       onClick={handleClick}
-      src={enemyImg}
       className={styles.enemy}
-      style={{ left: leftPosition + `%` }}
-    ></img>
+      style={{ left: leftPosition + `%`, backgroundImage: `URL(${imageSrc})` }}
+    ></div>
   );
 };
 
