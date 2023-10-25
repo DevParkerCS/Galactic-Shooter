@@ -1,0 +1,17 @@
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 4rem;
+  font-weight: bold;
+  animation: RotateSpinner 1s linear;
+}
+
+@keyframes RotateSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

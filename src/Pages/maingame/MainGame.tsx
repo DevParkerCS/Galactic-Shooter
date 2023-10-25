@@ -1,12 +1,14 @@
 import styles from "./MainGame.module.scss";
-import { useState, useRef, useEffect, SetStateAction } from "react";
+import React, { useState, useRef, useEffect, SetStateAction } from "react";
 import sound from "../../Assets/laser.mp3";
+import axios from "axios";
 import PlayerImg from "../../Assets/DurrrSpaceShip.png";
 import enemyImg1 from "../../Assets/shipBlue_manned.png";
 import enemyImg2 from "../../Assets/shipBeige_manned.png";
 import enemyImg3 from "../../Assets/shipGreen_manned.png";
 import enemyImg4 from "../../Assets/shipPink_manned.png";
 import enemyImg5 from "../../Assets/shipYellow_manned.png";
+import { HighScoreForm } from "./components/HighScoreForm";
 
 import { useNavigate } from "react-router-dom";
 
@@ -20,17 +22,14 @@ function MainGame() {
   const [lives, setLives] = useState(3);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [showForm, setShowForm] = useState<JSX.Element | null>(null);
   const navigate = useNavigate();
 
-  const laserClick = async () => {
+  const laserClick = () => {
     if (sessionStorage.getItem("volumeOn") == "true") {
       LASER_AUDIO.play();
     }
   };
-
-  useEffect(() => {
-    createEnemies();
-  }, [round]);
 
   const createEnemies = async () => {
     setEnemies([]);
@@ -55,11 +54,34 @@ function MainGame() {
     }
   };
 
+  const checkHighScore = async () => {
+    try {
+      const scores = (await axios.get("http://localhost:3000/")).data;
+      for (let i = 0; i < scores.length; i++) {
+        if (score > scores[i].score) {
+          setShowForm(
+            <HighScoreForm index={i} scores={scores} score={score} />
+          );
+        }
+      }
+      if (!showForm && scores.length !== 10) {
+        setShowForm(
+          <HighScoreForm
+            index={scores.legnth - 1}
+            scores={scores}
+            score={score}
+          />
+        );
+      }
+    } catch (e) {}
+  };
+
   useEffect(() => {
     // Check if enemies are all dead
-    if (lives < 0) {
+    if (lives == -1) {
       setGameOver(true);
       setEnemies([]);
+      checkHighScore();
     } else if (enemiesLeft === 0) {
       setRound((prevState) => {
         setEnemiesLeft(10 * (prevState + 1));
@@ -69,10 +91,15 @@ function MainGame() {
     // Check If Out Of Lives
   }, [enemiesLeft, lives]);
 
+  useEffect(() => {
+    createEnemies();
+  }, [round]);
+
   return (
     <div className={styles.gameWrapper} onClick={laserClick}>
       <GameNav score={score} lives={lives} />
       <Player />
+      {showForm}
       <button onClick={() => navigate("/")}>home</button>
       {gameOver ? (
         <h1 className={styles.gameOver}>Game Over</h1>

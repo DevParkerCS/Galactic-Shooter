@@ -7,7 +7,6 @@ import axios from "axios";
 const bgAudio = new Audio(bgMusic);
 
 export const LandingPage = () => {
-  axios.get("http://localhost:3000").then((res) => console.log(res.data));
   const navigate = useNavigate();
   const [isChosen, setIsChosen] = useState(false);
 
@@ -35,7 +34,14 @@ export const LandingPage = () => {
         Play
       </button>
       <button className={styles.btn}>Objective</button>
-      <button className={styles.btn}>Leaderboard</button>
+      <button
+        onClick={() => {
+          navigate("/leaderboard");
+        }}
+        className={styles.btn}
+      >
+        Leaderboard
+      </button>
     </div>
   );
 };

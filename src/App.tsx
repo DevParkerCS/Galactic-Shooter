@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainGame from "./Pages/maingame/MainGame";
 import { LandingPage } from "./Pages/landingpage/LandingPage";
+import { Leaderboard } from "./Pages/leaderboard/Leaderboard";
 
 const App = () => {
   return (
@@ -8,6 +9,7 @@ const App = () => {
       <Routes>
         <Route path={"/"} element={<LandingPage />} />
         <Route path={"/play"} element={<MainGame />} />
+        <Route path={"/leaderboard"} element={<Leaderboard />} />
         <Route path={"/*"} element={<h1>404 Not Found</h1>} />
       </Routes>
     </Router>
