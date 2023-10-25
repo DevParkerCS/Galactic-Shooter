@@ -41,4 +41,31 @@
     color: white;
     font-size: 3rem;
   }
+
+  .btn {
+    border: 2px solid black;
+  }
+
+  .yesBtn {
+    background: linear-gradient(
+      to right,
+      rgb(79, 156, 79),
+      lightgreen,
+      rgb(79, 156, 79)
+    );
+  }
+
+  .noBtn {
+    background: linear-gradient(
+      to right,
+      rgb(255, 0, 0),
+      rgb(252, 94, 94),
+      red
+    );
+  }
+
+  .btn:hover {
+    border: 2px solid white;
+    transition: border 0.25s;
+  }
 }

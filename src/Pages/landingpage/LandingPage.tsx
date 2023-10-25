@@ -2,10 +2,12 @@ import { SetStateAction, useEffect, useState } from "react";
 import styles from "./LandingPage.module.scss";
 import { useNavigate } from "react-router-dom";
 import bgMusic from "../../Assets/bgmusic.mp3";
+import axios from "axios";
 
 const bgAudio = new Audio(bgMusic);
 
 export const LandingPage = () => {
+  axios.get("http://localhost:3000").then((res) => console.log(res.data));
   const navigate = useNavigate();
   const [isChosen, setIsChosen] = useState(false);
 
@@ -58,10 +60,16 @@ const VolumeModal = ({ setIsChosen }: VolumeModalProps) => {
       <h2 className={styles.modalSubTitle}>
         Do You Allow Sound To Play On Your Computer?
       </h2>
-      <button className={styles.btn} onClick={handleYesClick}>
+      <button
+        className={`${styles.btn} ${styles.yesBtn}`}
+        onClick={handleYesClick}
+      >
         Yes
       </button>
-      <button className={styles.btn} onClick={handleNoClick}>
+      <button
+        className={`${styles.btn} ${styles.noBtn}`}
+        onClick={handleNoClick}
+      >
         No
       </button>
     </div>
