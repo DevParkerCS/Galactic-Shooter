@@ -56,7 +56,11 @@ function MainGame() {
 
   const checkHighScore = async () => {
     try {
-      const scores = (await axios.get("http://localhost:3000/")).data;
+      const scores = (
+        await axios.get(
+          process.env.REACT_APP_LEADERBOARDAPI || "http://localhost:3000"
+        )
+      ).data;
       for (let i = 0; i < scores.length; i++) {
         if (score > scores[i].score) {
           setShowForm(

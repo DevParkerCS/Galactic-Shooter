@@ -17,7 +17,7 @@ export const Leaderboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000")
+      .get(process.env.REACT_APP_ADDSCOREAPI || "http://localhost:3000")
       .then((res: ResponseType) => setLeaderboard(res.data));
   }, []);
 
