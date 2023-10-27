@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
+
 type HighScoreFormProps = {
   score: number;
   index: number;
@@ -30,7 +31,10 @@ export const HighScoreForm = ({ score, index, scores }: HighScoreFormProps) => {
         if (scores.length === 11) {
           scores.pop();
         }
-        await axios.put("http://localhost:3000/add-score", { scores: scores });
+        await axios.put(
+          process.env.REACT_APP_ADDSCOREAPI || "http://localhost:3000",
+          { scores: scores }
+        );
         navigate("/leaderboard");
       }
     } catch (e) {
