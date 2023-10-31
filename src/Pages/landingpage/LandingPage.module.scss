@@ -69,3 +69,25 @@
     transition: border 0.25s;
   }
 }
+
+@media screen and (max-width: 767px) {
+  .pageWrapper {
+    .btn {
+      width: 100%;
+    }
+
+    .title {
+      font-size: 3.5rem;
+    }
+  }
+  .volumeModal {
+    text-align: center;
+    .modalTitle {
+      font-size: 2rem;
+    }
+
+    .modalSubTitle {
+      font-size: 1rem;
+    }
+  }
+}

@@ -17,7 +17,7 @@
 .player {
   width: 10%;
   height: 10rem;
-  transform-origin: bottom;
+  transform-origin: top middle;
   position: absolute;
   left: 50%;
   bottom: -3rem;
@@ -29,25 +29,37 @@
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: fill;
-  animation: MoveEnemyDown 6s linear;
   top: 100%;
   width: 5%;
   height: 9%;
   background-size: contain;
   background-repeat: no-repeat;
   transform: rotate(180deg);
-}
 
-.GUINav {
-  color: white;
-  font-size: 2rem;
-  pointer-events: none;
-  user-select: none;
+  &.enemy0 {
+    animation: MoveEnemyDown 6s linear;
+  }
+  &.enemy1 {
+    animation: MoveEnemyDown 5.5s linear;
+  }
+  &.enemy2 {
+    animation: MoveEnemyDown 5s linear;
+  }
+  &.enemy3 {
+    animation: MoveEnemyDown 4.5s linear;
+  }
+  &.enemy4 {
+    animation: MoveEnemyDown 4s linear;
+  }
 }
 
 .gameOver {
   font-size: 3rem;
   color: white;
+  opacity: 0;
+  &.active {
+    opacity: 1;
+  }
 }
 
 @keyframes MoveEnemyDown {

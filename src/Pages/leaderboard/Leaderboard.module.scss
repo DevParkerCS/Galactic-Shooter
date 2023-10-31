@@ -1,4 +1,59 @@
+body {
+  overflow: hidden;
+}
+
 .leaderboardEntry {
   color: white;
   display: flex;
+  margin-bottom: 0.2rem;
+  font-size: 1.1rem;
+  font-weight: bolder;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+.title {
+  color: white;
+  font-size: 4rem;
+  text-decoration: underline;
+  position: relative;
+  text-align: center;
+}
+
+.leaderboardWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.homeBtn {
+  width: 50%;
+  font-size: 2rem;
+  border-radius: 25px;
+  align-self: center;
+  cursor: pointer;
+  margin: 1rem;
+  transition: width 0.15s linear;
+}
+
+.homeBtn:hover {
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  .title {
+    font-size: 2.8rem;
+  }
+  .leaderboardEntry {
+    margin-bottom: 0;
+    font-size: 1rem;
+  }
+
+  .homeBtn {
+    width: 100%;
+  }
 }

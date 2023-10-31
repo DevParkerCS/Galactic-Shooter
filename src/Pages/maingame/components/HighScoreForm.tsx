@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
+import styles from "./HighScoreForm.module.scss";
 
 type HighScoreFormProps = {
   score: number;
@@ -16,7 +17,12 @@ type ScoresType = {
 
 export const HighScoreForm = ({ score, index, scores }: HighScoreFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [inputVal, setInputVal] = useState("");
   const navigate = useNavigate();
+
+  const handleChange = (e: any) => {
+    setInputVal(e.target.value.toUpperCase());
+  };
 
   const updateScores = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -32,7 +38,8 @@ export const HighScoreForm = ({ score, index, scores }: HighScoreFormProps) => {
           scores.pop();
         }
         await axios.put(
-          process.env.REACT_APP_ADDSCOREAPI || "http://localhost:3000",
+          process.env.REACT_APP_ADDSCOREAPI ||
+            "http://localhost:3000/add-score",
           { scores: scores }
         );
         navigate("/leaderboard");
@@ -41,20 +48,25 @@ export const HighScoreForm = ({ score, index, scores }: HighScoreFormProps) => {
       console.log(e);
     }
   };
+
   if (isLoading) {
     return <Spinner />;
   }
+
   return (
-    <div>
-      <h1>New HighScore!</h1>
-      <form onSubmit={(e) => updateScores(e)}>
+    <div className={styles.highscoreWrapper}>
+      <h1 className={styles.title}>New HighScore!</h1>
+      <form className={styles.highscoreForm} onSubmit={(e) => updateScores(e)}>
         <input
+          className={styles.formInput}
           required
           name="initials"
-          placeholder="Initials"
+          value={inputVal}
+          onChange={handleChange}
           maxLength={3}
+          placeholder="___"
         ></input>
-        <h1>{score}</h1>
+        <button className={styles.formBtn}>Submit</button>
       </form>
     </div>
   );
