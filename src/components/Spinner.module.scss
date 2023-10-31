@@ -4,7 +4,7 @@
   top: 50%;
   font-size: 4rem;
   font-weight: bold;
-  animation: RotateSpinner 1s linear;
+  animation: RotateSpinner 1s linear infinite;
 }
 
 @keyframes RotateSpinner {

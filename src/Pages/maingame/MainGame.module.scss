@@ -56,9 +56,46 @@
 .gameOver {
   font-size: 3rem;
   color: white;
-  opacity: 0;
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   &.active {
-    opacity: 1;
+    display: block;
+  }
+  button {
+    width: 50%;
+    font-size: 2rem;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .btnCover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 0;
+  }
+
+  .playBtn .btnCover {
+    background: linear-gradient(rgb(223, 93, 93), rgb(164, 68, 68));
+  }
+
+  .homeBtn .btnCover {
+    background: linear-gradient(rgb(102, 205, 102), rgb(37, 150, 37));
+  }
+  button .txt {
+    position: relative;
+    z-index: 2;
+  }
+  button:hover {
+    .btnCover {
+      animation: MoveBtnLeft 0.8s linear infinite;
+    }
   }
 }
 
@@ -68,5 +105,14 @@
   }
   100% {
     top: 100%;
+  }
+}
+
+@keyframes MoveBtnLeft {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
   }
 }
