@@ -1,27 +1,35 @@
-.box {
-  width: 10rem;
-  height: 7rem;
-  position: absolute;
-  top: 50%;
-  background-color: transparent;
-  transform: translate(-50%, -50%);
-  border: 2px dashed white;
-  z-index: -1;
-}
-
 .gameWrapper {
   cursor: url("../../Assets/crosshair.png") 60 60, auto;
   height: 100vh;
+  position: relative;
+}
+
+.round {
+  color: white;
+  font-size: 5rem;
+  position: absolute;
+  top: 50%;
+  right: 125%;
+  transform: translate(0, -50%);
+  display: inline-block;
+  text-align: center;
+  text-wrap: nowrap;
+  pointer-events: none;
+}
+
+.showRound {
+  animation: RoundChange 2s linear;
 }
 
 .player {
   width: 10%;
   height: 10rem;
-  transform-origin: top middle;
   position: absolute;
   left: 50%;
   bottom: -3rem;
   user-select: none;
+  transform-origin: left center;
+  transform: translate(-50%, 0);
 }
 
 .enemy {
@@ -114,5 +122,20 @@
   }
   100% {
     left: 100%;
+  }
+}
+
+@keyframes RoundChange {
+  0% {
+    right: 100%;
+  }
+  15% {
+    right: 75%;
+  }
+  85% {
+    right: 25%;
+  }
+  100% {
+    right: -25%;
   }
 }

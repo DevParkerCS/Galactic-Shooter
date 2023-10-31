@@ -35,6 +35,8 @@ function MainGame() {
   const gameOverRef = useRef(false);
   const [showForm, setShowForm] = useState<JSX.Element | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [roundChanged, setRoundChanged] = useState(false);
+  const navigate = useNavigate();
 
   const laserClick = () => {
     if (sessionStorage.getItem("volumeOn") == "true") {
@@ -106,6 +108,12 @@ function MainGame() {
   };
 
   useEffect(() => {
+    if (sessionStorage.getItem("volumeOn") == null) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
     // Check if Player is dead
     if (gameState.lives < 0) {
       setGameState((prevState) => {
@@ -126,7 +134,11 @@ function MainGame() {
   useEffect(() => {
     gameOverRef.current = gameState.gameOver;
     if (!gameState.gameOver) {
-      createEnemies();
+      setRoundChanged(true);
+      setTimeout(() => {
+        setRoundChanged(false);
+        createEnemies();
+      }, 2000);
     } else if (gameState.gameOver) {
       checkHighScore();
     }
@@ -139,6 +151,9 @@ function MainGame() {
         lives={gameState.lives}
         gameState={gameState}
       />
+      <h1 className={`${styles.round} ${roundChanged ? styles.showRound : ""}`}>
+        Round {gameState.round}
+      </h1>
       <Player />
       {showForm}
       {gameState.gameOver ? (
@@ -246,9 +261,6 @@ const Enemy = ({
       });
     }, speedTimes[speed]);
     gameState.enemyTimers.push(timer.current);
-    if (sessionStorage.getItem("volumeOn") == null) {
-      navigate("/");
-    }
   }, []);
 
   return (
