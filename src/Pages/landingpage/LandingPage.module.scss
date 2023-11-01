@@ -70,7 +70,7 @@
   }
 }
 
-@media only screen and (min-device-width: 480px) and (max-device-width: 850px) and (orientation: landscape) {
+@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
   .pageWrapper {
     .btn {
       width: 75%;
