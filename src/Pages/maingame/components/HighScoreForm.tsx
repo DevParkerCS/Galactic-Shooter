@@ -33,14 +33,11 @@ export const HighScoreForm = ({ score, index, scores }: HighScoreFormProps) => {
           "initials"
         ) as HTMLInputElement;
         const userName = userInput.value;
-        scores.splice(index, 0, { name: userName, score: score });
-        if (scores.length === 11) {
-          scores.pop();
-        }
+        const newScore = { name: userName, score: score };
         await axios.put(
           process.env.REACT_APP_ADDSCOREAPI ||
             "http://localhost:3000/add-score",
-          { scores: scores }
+          { score: newScore }
         );
         navigate("/leaderboard");
       }

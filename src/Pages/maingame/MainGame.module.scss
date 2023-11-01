@@ -107,6 +107,38 @@
   }
 }
 
+@media only screen and (min-device-width: 480px) and (max-device-width: 850px) and (orientation: landscape) {
+  .player {
+    width: 5%;
+    height: 6rem;
+  }
+
+  .gameOver {
+    font-size: 1.8rem;
+
+    button {
+      font-size: 1.2rem;
+    }
+  }
+  .enemy {
+    &.enemy0 {
+      animation: MoveEnemyDown calc(6s / 1.5) linear;
+    }
+    &.enemy1 {
+      animation: MoveEnemyDown calc(5.5s / 1.5) linear;
+    }
+    &.enemy2 {
+      animation: MoveEnemyDown calc(5s / 1.5) linear;
+    }
+    &.enemy3 {
+      animation: MoveEnemyDown calc(4.5s / 1.5) linear;
+    }
+    &.enemy4 {
+      animation: MoveEnemyDown calc(4s / 1.5) linear;
+    }
+  }
+}
+
 @keyframes MoveEnemyDown {
   0% {
     top: -10%;

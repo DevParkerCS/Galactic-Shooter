@@ -1,0 +1,54 @@
+.objectiveWrapper {
+  display: flex;
+  color: white;
+  align-items: center;
+  flex-direction: column;
+}
+
+.objective {
+  text-align: center;
+  margin: 1rem;
+  font-size: 4rem;
+}
+
+.descriptionTxt {
+  width: 90vw;
+  text-align: center;
+}
+
+.txtWrapper {
+  width: 90vw;
+  display: flex;
+
+  .txtSection {
+    margin: 2rem 0;
+  }
+
+  .txtTitle {
+    text-align: center;
+  }
+
+  .leftTxt {
+    width: 50%;
+    padding: 0.5rem;
+  }
+
+  .rightTxt {
+    width: 50%;
+    padding: 0.5rem;
+  }
+}
+
+.homeBtn {
+  width: 50%;
+  font-size: 2rem;
+  border-radius: 25px;
+  align-self: center;
+  cursor: pointer;
+  margin: 1rem;
+  transition: width 0.15s linear;
+}
+
+.homeBtn:hover {
+  width: 90vw;
+}

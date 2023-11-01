@@ -33,7 +33,9 @@ export const LandingPage = () => {
       <button className={styles.btn} onClick={() => navigate("/play")}>
         Play
       </button>
-      <button className={styles.btn}>Objective</button>
+      <button className={styles.btn} onClick={() => navigate("/objective")}>
+        Objective
+      </button>
       <button
         onClick={() => {
           navigate("/leaderboard");

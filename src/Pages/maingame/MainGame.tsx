@@ -212,6 +212,13 @@ const Enemy = ({
   let timer = useRef<NodeJS.Timeout>();
   const navigate = useNavigate();
   const speedTimes = [6000, 5500, 5000, 4500, 4000];
+  let speedMultiplier = 1;
+
+  const calcSpeed = () => {
+    if (window.innerWidth <= 850) {
+      speedMultiplier = 1.5;
+    }
+  };
 
   const handleClick = (e: any) => {
     clearTimeout(timer.current);
@@ -243,6 +250,7 @@ const Enemy = ({
 
   useEffect(() => {
     generateRandomPosition();
+    calcSpeed();
     timer.current = setTimeout(() => {
       setGameState((prevState) => {
         return {
@@ -259,7 +267,7 @@ const Enemy = ({
           }),
         };
       });
-    }, speedTimes[speed]);
+    }, speedTimes[speed] / speedMultiplier);
     gameState.enemyTimers.push(timer.current);
   }, []);
 

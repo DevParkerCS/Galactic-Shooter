@@ -33,16 +33,30 @@ export const Leaderboard = () => {
       <div className={styles.contentWrapper}>
         <h1 className={styles.title}>LEADERBOARD</h1>
         <div className={styles.entriesWrapper}>
-          {leaderboard?.map((p, i) => {
-            return (
-              <div key={i} className={styles.leaderboardEntry}>
-                <h1>
-                  {i + 1}){p.name.toUpperCase()}:{" "}
-                </h1>
-                <h1>{p.score}</h1>
-              </div>
-            );
-          })}
+          <div className={styles.leftHalf}>
+            {leaderboard?.slice(0, 5).map((p, i) => {
+              return (
+                <div key={i} className={styles.leaderboardEntry}>
+                  <h1>
+                    {i + 1}){p.name.toUpperCase()}:{" "}
+                  </h1>
+                  <h1>{p.score}</h1>
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            {leaderboard?.slice(5, 10).map((p, i) => {
+              return (
+                <div key={i} className={styles.leaderboardEntry}>
+                  <h1>
+                    {i + 6}){p.name.toUpperCase()}:{" "}
+                  </h1>
+                  <h1>{p.score}</h1>
+                </div>
+              );
+            })}
+          </div>
         </div>
         <button onClick={() => navigate("/")} className={styles.homeBtn}>
           Home
