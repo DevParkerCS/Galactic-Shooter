@@ -36,11 +36,18 @@ function MainGame() {
   const [showForm, setShowForm] = useState<JSX.Element | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [roundChanged, setRoundChanged] = useState(false);
+  const gameObj = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const laserClick = () => {
     if (sessionStorage.getItem("volumeOn") == "true") {
       LASER_AUDIO.play();
+    }
+  };
+
+  const setFullScreen = () => {
+    if (gameObj) {
+      gameObj.current?.requestFullscreen();
     }
   };
 
@@ -145,7 +152,7 @@ function MainGame() {
   }, [gameState.round, gameState.gameOver]);
 
   return (
-    <div className={styles.gameWrapper} onClick={laserClick}>
+    <div ref={gameObj} className={styles.gameWrapper} onClick={laserClick}>
       <GameNav
         score={gameState.score}
         lives={gameState.lives}
