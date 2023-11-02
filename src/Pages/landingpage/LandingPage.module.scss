@@ -1,6 +1,5 @@
 body {
   overflow: hidden;
-  position: relative;
 }
 
 .pageWrapper {
@@ -46,6 +45,10 @@ body {
   .modalSubTitle {
     color: white;
     font-size: 3rem;
+  }
+
+  .modalMobile {
+    display: none;
   }
 
   .btn {
@@ -95,6 +98,10 @@ body {
 
     .modalSubTitle {
       font-size: 1rem;
+    }
+
+    .modalMobile {
+      display: block;
     }
   }
 }

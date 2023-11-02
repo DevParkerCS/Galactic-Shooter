@@ -72,6 +72,9 @@ const VolumeModal = ({ setIsChosen }: VolumeModalProps) => {
       <h2 className={styles.modalSubTitle}>
         Do You Allow Sound To Play On Your Computer?
       </h2>
+      <h2 className={`${styles.modalSubTitle} ${styles.modalMobile}`}>
+        FullScreen Is Recommended For Mobile Devices
+      </h2>
       <button
         className={`${styles.btn} ${styles.yesBtn}`}
         onClick={handleYesClick}
