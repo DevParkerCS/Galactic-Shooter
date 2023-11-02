@@ -28,6 +28,9 @@ body {
 .leaderboardWrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
+  background-image: url("../../Assets/stars.jpg");
+  height: 100vh;
 }
 
 .homeBtn {
@@ -58,6 +61,7 @@ body {
     font-size: 1.5rem;
     margin: 0.5rem;
   }
+
   .entriesWrapper {
     display: flex;
   }

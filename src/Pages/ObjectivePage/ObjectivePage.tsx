@@ -1,3 +1,5 @@
+import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { RotateModal } from "../../components/modals/RotateModal";
 import styles from "./ObjectivePage.module.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -5,6 +7,8 @@ export const ObjectivePage = () => {
   const navigate = useNavigate();
   return (
     <div className={styles.objectiveWrapper}>
+      <RotateModal />
+      <FullscreenBtn />
       <h1 className={styles.objective}>Objective</h1>
       <h3 className={styles.descriptionTxt}>
         Embark on an adrenaline-fueled cosmic journey in our action-packed 2D

@@ -3,6 +3,8 @@ import styles from "./LandingPage.module.scss";
 import { useNavigate } from "react-router-dom";
 import bgMusic from "../../Assets/bgmusic.mp3";
 import axios from "axios";
+import { RotateModal } from "../../components/modals/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn";
 
 const bgAudio = new Audio(bgMusic);
 
@@ -29,6 +31,8 @@ export const LandingPage = () => {
       ) : (
         ""
       )}
+      <RotateModal />
+      <FullscreenBtn />
       <h1 className={styles.title}>Galactic Shooter</h1>
       <button className={styles.btn} onClick={() => navigate("/play")}>
         Play

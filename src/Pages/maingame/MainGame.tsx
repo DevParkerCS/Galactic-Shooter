@@ -13,6 +13,8 @@ import { GameNav } from "./components/GameNav";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner";
 import { GameStateType } from "../../@types/gamestate";
+import { RotateModal } from "../../components/modals/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -42,12 +44,6 @@ function MainGame() {
   const laserClick = () => {
     if (sessionStorage.getItem("volumeOn") == "true") {
       LASER_AUDIO.play();
-    }
-  };
-
-  const setFullScreen = () => {
-    if (gameObj) {
-      gameObj.current?.requestFullscreen();
     }
   };
 
@@ -158,6 +154,8 @@ function MainGame() {
         lives={gameState.lives}
         gameState={gameState}
       />
+      <RotateModal />
+      <FullscreenBtn />
       <h1 className={`${styles.round} ${roundChanged ? styles.showRound : ""}`}>
         Round {gameState.round}
       </h1>

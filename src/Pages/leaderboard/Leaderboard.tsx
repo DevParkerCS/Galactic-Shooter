@@ -4,6 +4,8 @@ import { useState } from "react";
 import styles from "./Leaderboard.module.scss";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner";
+import { RotateModal } from "../../components/modals/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn";
 
 type ResponseType = {
   data: [LeaderboardType];
@@ -30,6 +32,8 @@ export const Leaderboard = () => {
 
   return (
     <div className={styles.leaderboardWrapper}>
+      <RotateModal />
+      <FullscreenBtn />
       <div className={styles.contentWrapper}>
         <h1 className={styles.title}>LEADERBOARD</h1>
         <div className={styles.entriesWrapper}>
