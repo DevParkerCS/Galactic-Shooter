@@ -15,6 +15,7 @@ import { Spinner } from "../../components/Spinner";
 import { GameStateType } from "../../@types/gamestate";
 import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { EnemyClass } from "../../classes/EnemyClass";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -58,6 +59,7 @@ function MainGame() {
       }
       const imgIndex = Math.floor(Math.random() * 5);
       const image = ENEMY_IMAGES[imgIndex];
+      const EnemyObj = new EnemyClass(image, imgIndex, i);
       // Create new enemy in gameState
       setGameState((prevState) => {
         return {
@@ -68,9 +70,7 @@ function MainGame() {
               setGameState={setGameState}
               gameState={gameState}
               key={i}
-              index={i}
-              speed={imgIndex}
-              imageSrc={image}
+              EnemyObj={EnemyObj}
             />,
           ],
         };
@@ -199,23 +199,14 @@ const Player = () => {
 
 type EnemyProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
-  index: number;
-  imageSrc: string;
-  speed: number;
+  EnemyObj: EnemyClass;
   gameState: GameStateType;
 };
 
-const Enemy = ({
-  setGameState,
-  gameState,
-  index,
-  imageSrc,
-  speed,
-}: EnemyProps) => {
+const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
   const [leftPosition, setLeftPosition] = useState(0);
   const enemyRef = useRef<HTMLImageElement>(null);
   let timer = useRef<NodeJS.Timeout>();
-  const navigate = useNavigate();
   const speedTimes = [6000, 5500, 5000, 4500, 4000];
   let speedMultiplier = 1;
 
@@ -225,20 +216,15 @@ const Enemy = ({
     }
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = () => {
     clearTimeout(timer.current);
     setGameState((prevState) => {
       return {
         ...prevState,
         score: prevState.score + 100,
         enemiesLeft: prevState.enemiesLeft - 1,
-      };
-    });
-    setGameState((prevState) => {
-      return {
-        ...prevState,
         enemies: prevState.enemies.filter((enemy) => {
-          return enemy.props.index !== index;
+          return enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex;
         }),
       };
     });
@@ -256,6 +242,8 @@ const Enemy = ({
   useEffect(() => {
     generateRandomPosition();
     calcSpeed();
+    EnemyObj.setSpeed = speedTimes[EnemyObj.getSpeedIndex];
+    console.log(EnemyObj.getImgLink);
     timer.current = setTimeout(() => {
       setGameState((prevState) => {
         return {
@@ -268,11 +256,13 @@ const Enemy = ({
         return {
           ...prevState,
           enemies: prevState.enemies.filter((enemy) => {
-            return enemy.props.index !== index;
+            return (
+              enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex
+            );
           }),
         };
       });
-    }, speedTimes[speed] / speedMultiplier);
+    }, EnemyObj.getSpeed / speedMultiplier);
     gameState.enemyTimers.push(timer.current);
   }, []);
 
@@ -280,8 +270,11 @@ const Enemy = ({
     <div
       ref={enemyRef}
       onClick={handleClick}
-      className={`${styles.enemy} ${styles["enemy" + speed]}`}
-      style={{ left: leftPosition + `%`, backgroundImage: `URL(${imageSrc})` }}
+      className={`${styles.enemy} ${styles["enemy" + EnemyObj.getSpeedIndex]}`}
+      style={{
+        left: leftPosition + `%`,
+        backgroundImage: `URL(${EnemyObj.getImgLink})`,
+      }}
     ></div>
   );
 };
