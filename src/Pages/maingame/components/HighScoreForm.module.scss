@@ -42,3 +42,20 @@
     color: white;
   }
 }
+
+@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+  .highscoreWrapper {
+    .title {
+      font-size: 3rem;
+      width: 100vw;
+    }
+
+    .formInput {
+      font-size: 4.5rem;
+    }
+
+    .formBtn {
+      width: 60%;
+    }
+  }
+}
