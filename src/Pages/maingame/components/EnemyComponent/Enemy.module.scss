@@ -1,0 +1,74 @@
+.enemy {
+  position: absolute;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: fill;
+  top: 100%;
+  width: 5%;
+  height: 9%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(180deg);
+
+  &.enemy0 {
+    animation: MoveEnemyDown 6s linear;
+  }
+  &.enemy1 {
+    animation: MoveEnemyDown 5.5s linear;
+  }
+  &.enemy2 {
+    animation: MoveEnemyDown 5s linear;
+  }
+  &.enemy3 {
+    animation: MoveEnemyDown 4.5s linear;
+  }
+  &.enemy4 {
+    animation: MoveEnemyDown 4s linear;
+  }
+  &.enemy6 {
+    animation: MoveEnemyDown 10s linear;
+  }
+}
+
+.healthWrapper {
+  width: 60vw;
+  height: 1rem;
+  align-self: center;
+  border: 2px solid white;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.healthBar {
+  height: 100%;
+  background-color: red;
+}
+
+@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+  .enemy {
+    &.enemy0 {
+      animation: MoveEnemyDown calc(6s / 1.5) linear;
+    }
+    &.enemy1 {
+      animation: MoveEnemyDown calc(5.5s / 1.5) linear;
+    }
+    &.enemy2 {
+      animation: MoveEnemyDown calc(5s / 1.5) linear;
+    }
+    &.enemy3 {
+      animation: MoveEnemyDown calc(4.5s / 1.5) linear;
+    }
+    &.enemy4 {
+      animation: MoveEnemyDown calc(4s / 1.5) linear;
+    }
+  }
+}
+
+@keyframes MoveEnemyDown {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 100%;
+  }
+}

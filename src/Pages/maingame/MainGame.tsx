@@ -16,6 +16,7 @@ import { GameStateType } from "../../@types/gamestate";
 import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
 import { EnemyClass } from "../../classes/EnemyClass";
+import { Enemy } from "./components/EnemyComponent/Enemy";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -52,30 +53,59 @@ function MainGame() {
     setGameState((prevState) => {
       return { ...prevState, enemies: [] };
     });
-    for (let i = 0; i < 10 * gameState.round; i++) {
-      // If game is over stop creating enemies
-      if (gameOverRef.current) {
-        break;
-      }
-      const imgIndex = Math.floor(Math.random() * 5);
-      const image = ENEMY_IMAGES[imgIndex];
-      const EnemyObj = new EnemyClass(image, imgIndex, i);
-      // Create new enemy in gameState
+
+    if (gameState.round == 1) {
+      setGameState((prevState) => {
+        return { ...prevState, enemiesLeft: 1 };
+      });
+      const enemyObj = new EnemyClass(enemyImg1, 0, 100, 6, 10000, true);
       setGameState((prevState) => {
         return {
           ...prevState,
           enemies: [
-            ...prevState.enemies,
             <Enemy
               setGameState={setGameState}
               gameState={gameState}
-              key={i}
-              EnemyObj={EnemyObj}
+              key={0}
+              EnemyObj={enemyObj}
             />,
           ],
         };
       });
-      await new Promise((res) => setTimeout(res, 500));
+    } else {
+      for (let i = 0; i < 10 * gameState.round; i++) {
+        // If game is over stop creating enemies
+        if (gameOverRef.current) {
+          break;
+        }
+        const speedTimes = [6000, 5500, 5000, 4500, 4000];
+        const imgIndex = Math.floor(Math.random() * 5);
+        const image = ENEMY_IMAGES[imgIndex];
+        const EnemyObj = new EnemyClass(
+          image,
+          i,
+          10,
+          imgIndex,
+          speedTimes[imgIndex],
+          false
+        );
+        // Create new enemy in gameState
+        setGameState((prevState) => {
+          return {
+            ...prevState,
+            enemies: [
+              ...prevState.enemies,
+              <Enemy
+                setGameState={setGameState}
+                gameState={gameState}
+                key={i}
+                EnemyObj={EnemyObj}
+              />,
+            ],
+          };
+        });
+        await new Promise((res) => setTimeout(res, 500));
+      }
     }
   };
 
@@ -136,14 +166,14 @@ function MainGame() {
 
   useEffect(() => {
     gameOverRef.current = gameState.gameOver;
-    if (!gameState.gameOver) {
+    if (gameState.gameOver) {
+      checkHighScore();
+    } else if (!gameState.gameOver) {
       setRoundChanged(true);
       setTimeout(() => {
         setRoundChanged(false);
         createEnemies();
       }, 2000);
-    } else if (gameState.gameOver) {
-      checkHighScore();
     }
   }, [gameState.round, gameState.gameOver]);
 
@@ -195,88 +225,6 @@ const Player = () => {
   };
 
   return <img ref={PlayerRef} src={PlayerImg} className={styles.player}></img>;
-};
-
-type EnemyProps = {
-  setGameState: React.Dispatch<SetStateAction<GameStateType>>;
-  EnemyObj: EnemyClass;
-  gameState: GameStateType;
-};
-
-const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
-  const [leftPosition, setLeftPosition] = useState(0);
-  const enemyRef = useRef<HTMLImageElement>(null);
-  let timer = useRef<NodeJS.Timeout>();
-  const speedTimes = [6000, 5500, 5000, 4500, 4000];
-  let speedMultiplier = 1;
-
-  const calcSpeed = () => {
-    if (window.innerWidth <= 850) {
-      speedMultiplier = 1.5;
-    }
-  };
-
-  const handleClick = () => {
-    clearTimeout(timer.current);
-    setGameState((prevState) => {
-      return {
-        ...prevState,
-        score: prevState.score + 100,
-        enemiesLeft: prevState.enemiesLeft - 1,
-        enemies: prevState.enemies.filter((enemy) => {
-          return enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex;
-        }),
-      };
-    });
-  };
-
-  const generateRandomPosition = () => {
-    let positionx = Math.floor(Math.random() * 95);
-    setLeftPosition(positionx);
-  };
-
-  useEffect(() => {
-    clearTimeout(timer.current);
-  }, [gameState.gameOver]);
-
-  useEffect(() => {
-    generateRandomPosition();
-    calcSpeed();
-    EnemyObj.setSpeed = speedTimes[EnemyObj.getSpeedIndex];
-    console.log(EnemyObj.getImgLink);
-    timer.current = setTimeout(() => {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          lives: prevState.lives - 1,
-          enemiesLeft: prevState.enemiesLeft - 1,
-        };
-      });
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          enemies: prevState.enemies.filter((enemy) => {
-            return (
-              enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex
-            );
-          }),
-        };
-      });
-    }, EnemyObj.getSpeed / speedMultiplier);
-    gameState.enemyTimers.push(timer.current);
-  }, []);
-
-  return (
-    <div
-      ref={enemyRef}
-      onClick={handleClick}
-      className={`${styles.enemy} ${styles["enemy" + EnemyObj.getSpeedIndex]}`}
-      style={{
-        left: leftPosition + `%`,
-        backgroundImage: `URL(${EnemyObj.getImgLink})`,
-      }}
-    ></div>
-  );
 };
 
 type GameOverProps = {
