@@ -25,6 +25,7 @@ export const GameNav = ({ score, lives, gameState }: GameNavProps) => {
   return (
     <div className={styles.GUINav}>
       <h2>Score: {gameState.score}</h2>
+      <h2>Enemies Left: {gameState.enemiesLeft}</h2>
       <div className={styles.livesWrapper}>
         <h2 className={styles.lives}>Lives: </h2>
         <img className={styles.livesImg} src={shownImg}></img>

@@ -18,7 +18,7 @@ export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
   let speedMultiplier = 1;
 
   const calcSpeed = () => {
-    if (window.innerWidth <= 850) {
+    if (window.innerHeight <= 480) {
       speedMultiplier = 1.5;
     }
   };
@@ -26,6 +26,9 @@ export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
   const handleClick = () => {
     EnemyObj.removeHealth = 10;
     setEnemyHealth(enemyHealth - 10);
+    if (EnemyObj.getIsBoss && EnemyObj.getHealth % 30 == 0) {
+      generateRandomPosition();
+    }
     if (EnemyObj.getHealth <= 0) {
       clearTimeout(timer.current);
       setGameState((prevState) => {

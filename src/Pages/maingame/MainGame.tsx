@@ -28,7 +28,7 @@ function MainGame() {
     lives: 3,
     score: 0,
     gameOver: false,
-    enemiesLeft: 10,
+    enemiesLeft: 5,
     enemyTimers: [],
     timeStamp: Date.now(),
     enemies: [],
@@ -51,14 +51,20 @@ function MainGame() {
 
   const createEnemies = async () => {
     setGameState((prevState) => {
-      return { ...prevState, enemies: [] };
+      return {
+        ...prevState,
+        enemies: [],
+        enemiesLeft: prevState.round % 5 == 0 ? 1 : 5 * prevState.round,
+      };
     });
 
-    if (gameState.round == 1) {
+    if (gameState.round % 5 == 0) {
+      const imgIndex = Math.floor(Math.random() * 5);
+      const image = ENEMY_IMAGES[imgIndex];
       setGameState((prevState) => {
         return { ...prevState, enemiesLeft: 1 };
       });
-      const enemyObj = new EnemyClass(enemyImg1, 0, 100, 6, 10000, true);
+      const enemyObj = new EnemyClass(image, 0, 150, 6, 10000, true);
       setGameState((prevState) => {
         return {
           ...prevState,
@@ -73,7 +79,7 @@ function MainGame() {
         };
       });
     } else {
-      for (let i = 0; i < 10 * gameState.round; i++) {
+      for (let i = 0; i < 5 * gameState.round; i++) {
         // If game is over stop creating enemies
         if (gameOverRef.current) {
           break;
@@ -158,7 +164,6 @@ function MainGame() {
         return {
           ...prevState,
           round: prevState.round + 1,
-          enemiesLeft: 10 * (prevState.round + 1),
         };
       });
     }
