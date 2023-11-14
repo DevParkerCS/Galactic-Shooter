@@ -8,6 +8,7 @@ import enemyImg2 from "../../Assets/enemies/shipBeige_manned.png";
 import enemyImg3 from "../../Assets/enemies/shipGreen_manned.png";
 import enemyImg4 from "../../Assets/enemies/shipPink_manned.png";
 import enemyImg5 from "../../Assets/enemies/shipYellow_manned.png";
+import bombImg from "../../Assets/bomb64.png";
 import { HighScoreForm } from "./components/HighScoreForm";
 import { GameNav } from "./components/GameNav";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
 import { EnemyClass } from "../../classes/EnemyClass";
 import { Enemy } from "./components/EnemyComponent/Enemy";
+import { spawn } from "child_process";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -36,6 +38,7 @@ function MainGame() {
   const [gameState, setGameState] = useState<GameStateType>({
     ...initialGameState,
   });
+  const [spawnables, setSpawnables] = useState<JSX.Element[]>([]);
   const gameOverRef = useRef(false);
   const [showForm, setShowForm] = useState<JSX.Element | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +86,12 @@ function MainGame() {
         // If game is over stop creating enemies
         if (gameOverRef.current) {
           break;
+        }
+        const spawnBomb = Math.floor(Math.random() * 8) == 4;
+        if (spawnBomb) {
+          setSpawnables((prevState) => {
+            return [...prevState, <Bomb />];
+          });
         }
         const speedTimes = [6000, 5500, 5000, 4500, 4000];
         const imgIndex = Math.floor(Math.random() * 5);
@@ -213,6 +222,9 @@ function MainGame() {
           return e;
         })
       )}
+      {spawnables.map((e) => {
+        return e;
+      })}
     </div>
   );
 }
@@ -230,6 +242,14 @@ const Player = () => {
   };
 
   return <img ref={PlayerRef} src={PlayerImg} className={styles.player}></img>;
+};
+
+const Bomb = () => {
+  return (
+    <div className={styles.bombWrapper}>
+      <img src={bombImg} />
+    </div>
+  );
 };
 
 type GameOverProps = {
