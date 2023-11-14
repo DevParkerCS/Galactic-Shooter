@@ -18,7 +18,10 @@ import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
 import { EnemyClass } from "../../classes/EnemyClass";
 import { Enemy } from "./components/EnemyComponent/Enemy";
-import { spawn } from "child_process";
+import { MovementUtils } from "../../utils/MovementUtils";
+import { v4 as uuid } from "uuid";
+import { socket } from "../../socket";
+import { checkHighScore } from "../../utils/APIFetcher";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -33,18 +36,29 @@ function MainGame() {
     enemiesLeft: 5,
     enemyTimers: [],
     timeStamp: Date.now(),
-    enemies: [],
   };
   const [gameState, setGameState] = useState<GameStateType>({
     ...initialGameState,
   });
+  const [enemies, setEnemies] = useState<JSX.Element[]>([]);
   const [spawnables, setSpawnables] = useState<JSX.Element[]>([]);
   const gameOverRef = useRef(false);
   const [showForm, setShowForm] = useState<JSX.Element | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [roundChanged, setRoundChanged] = useState(false);
+  const [playerJoined, setPlayerJoined] = useState(false);
   const gameObj = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  socket.on("playerJoined", () => {
+    setPlayerJoined(true);
+  });
+
+  socket.on("gameOver", () => {
+    setGameState((prevState) => {
+      return { ...prevState, gameOver: true };
+    });
+  });
 
   const laserClick = () => {
     if (sessionStorage.getItem("volumeOn") == "true") {
@@ -68,19 +82,16 @@ function MainGame() {
         return { ...prevState, enemiesLeft: 1 };
       });
       const enemyObj = new EnemyClass(image, 0, 150, 6, 10000, true);
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          enemies: [
-            <Enemy
-              setGameState={setGameState}
-              gameState={gameState}
-              key={0}
-              EnemyObj={enemyObj}
-            />,
-          ],
-        };
-      });
+      setEnemies((prevState) => [
+        ...prevState,
+        <Enemy
+          setGameState={setGameState}
+          setEnemies={setEnemies}
+          gameState={gameState}
+          key={0}
+          EnemyObj={enemyObj}
+        />,
+      ]);
     } else {
       for (let i = 0; i < 5 * gameState.round; i++) {
         // If game is over stop creating enemies
@@ -89,8 +100,17 @@ function MainGame() {
         }
         const spawnBomb = Math.floor(Math.random() * 8) == 4;
         if (spawnBomb) {
+          const uniqueId = uuid();
           setSpawnables((prevState) => {
-            return [...prevState, <Bomb />];
+            return [
+              ...prevState,
+              <Bomb
+                setSpawnables={setSpawnables}
+                index={uniqueId}
+                setGameState={setGameState}
+                key={uniqueId}
+              />,
+            ];
           });
         }
         const speedTimes = [6000, 5500, 5000, 4500, 4000];
@@ -104,55 +124,20 @@ function MainGame() {
           speedTimes[imgIndex],
           false
         );
-        // Create new enemy in gameState
-        setGameState((prevState) => {
-          return {
-            ...prevState,
-            enemies: [
-              ...prevState.enemies,
-              <Enemy
-                setGameState={setGameState}
-                gameState={gameState}
-                key={i}
-                EnemyObj={EnemyObj}
-              />,
-            ],
-          };
-        });
+        // Create new enemy
+        setEnemies((prevState) => [
+          ...prevState,
+          <Enemy
+            setGameState={setGameState}
+            setEnemies={setEnemies}
+            gameState={gameState}
+            key={i}
+            EnemyObj={EnemyObj}
+          />,
+        ]);
         await new Promise((res) => setTimeout(res, 500));
       }
     }
-  };
-
-  const checkHighScore = async () => {
-    try {
-      setIsLoading(true);
-      // Gets scores from database
-      const scores = (
-        await axios.get(
-          process.env.REACT_APP_LEADERBOARDAPI || "http://localhost:3000"
-        )
-      ).data;
-      for (let i = 0; i < scores.length; i++) {
-        // Check if the players score is greater than the score at nth place
-        if (gameState.score > scores[i].score) {
-          setShowForm(
-            <HighScoreForm index={i} scores={scores} score={gameState.score} />
-          );
-        }
-      }
-      // If the length of the scores isn't 10 then place the score at the end.
-      if (!showForm && scores.length !== 10) {
-        setShowForm(
-          <HighScoreForm
-            index={scores.legnth - 1}
-            scores={scores}
-            score={gameState.score}
-          />
-        );
-      }
-      setIsLoading(false);
-    } catch (e) {}
   };
 
   useEffect(() => {
@@ -164,9 +149,13 @@ function MainGame() {
   useEffect(() => {
     // Check if Player is dead
     if (gameState.lives < 0) {
+      socket.emit("gameOver");
       setGameState((prevState) => {
         return { ...prevState, gameOver: true, enemies: [] };
       });
+      for (let timer of gameState.enemyTimers) {
+        clearTimeout(timer);
+      }
       // Check if all enemies are dead
     } else if (gameState.enemiesLeft === 0) {
       setGameState((prevState) => {
@@ -175,21 +164,33 @@ function MainGame() {
           round: prevState.round + 1,
         };
       });
+      for (let timer of gameState.enemyTimers) {
+        clearTimeout(timer);
+      }
+      setSpawnables([]);
     }
   }, [gameState.enemiesLeft, gameState.lives]);
 
   useEffect(() => {
     gameOverRef.current = gameState.gameOver;
     if (gameState.gameOver) {
-      checkHighScore();
+      if (sessionStorage.getItem("isMultiplayer") !== null) {
+        checkHighScore({ setIsLoading, gameState, setShowForm, showForm });
+      }
     } else if (!gameState.gameOver) {
-      setRoundChanged(true);
-      setTimeout(() => {
-        setRoundChanged(false);
-        createEnemies();
-      }, 2000);
+      if (sessionStorage.getItem("isMultiplayer") == null || playerJoined) {
+        setRoundChanged(true);
+        setTimeout(() => {
+          setRoundChanged(false);
+          createEnemies();
+        }, 2000);
+      }
     }
-  }, [gameState.round, gameState.gameOver]);
+  }, [gameState.round, gameState.gameOver, playerJoined]);
+
+  if (sessionStorage.getItem("isMultiplayer") !== null && !playerJoined) {
+    return <Spinner />;
+  }
 
   return (
     <div ref={gameObj} className={styles.gameWrapper} onClick={laserClick}>
@@ -211,20 +212,22 @@ function MainGame() {
             <Spinner />
           ) : (
             <GameOver
-              gameState={gameState}
+              setPlayerJoined={setPlayerJoined}
               setGameState={setGameState}
               initialGameState={initialGameState}
             />
           )}
         </h1>
       ) : (
-        gameState.enemies.map((e) => {
+        enemies.map((e) => {
           return e;
         })
       )}
-      {spawnables.map((e) => {
-        return e;
-      })}
+      {!gameState.gameOver
+        ? spawnables.map((e) => {
+            return e;
+          })
+        : ""}
     </div>
   );
 }
@@ -244,9 +247,68 @@ const Player = () => {
   return <img ref={PlayerRef} src={PlayerImg} className={styles.player}></img>;
 };
 
-const Bomb = () => {
+type BombProps = {
+  setSpawnables: React.Dispatch<SetStateAction<JSX.Element[]>>;
+  setGameState: React.Dispatch<SetStateAction<GameStateType>>;
+  index: string;
+};
+
+const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
+  const movementUtils = new MovementUtils();
+  const timerId = useRef<NodeJS.Timeout>();
+  const [leftPosition, setLeftPosition] = useState(0);
+
+  useEffect(() => {
+    setLeftPosition(movementUtils.generateRandPosition());
+    timerId.current = setTimeout(() => {
+      setSpawnables((prevState) => {
+        return prevState.filter((e) => {
+          return e.props.index !== index;
+        });
+      });
+
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          enemyTimers: prevState.enemyTimers.filter((e) => {
+            return e !== timerId.current;
+          }),
+        };
+      });
+    }, 5000);
+    setGameState((prevState) => {
+      return {
+        ...prevState,
+        enemyTimers: [...prevState.enemyTimers, timerId.current],
+      };
+    });
+  }, []);
+
+  const handleClick = () => {
+    clearTimeout(timerId.current);
+
+    setGameState((prevState) => {
+      return {
+        ...prevState,
+        lives: prevState.lives - 1,
+        enemyTimers: prevState.enemyTimers.filter((e) => {
+          return e !== timerId.current;
+        }),
+      };
+    });
+    setSpawnables((prevState) => {
+      return prevState.filter((e) => {
+        return e.props.index !== index;
+      });
+    });
+  };
+
   return (
-    <div className={styles.bombWrapper}>
+    <div
+      className={styles.bombWrapper}
+      style={{ left: leftPosition + "%" }}
+      onClick={handleClick}
+    >
       <img src={bombImg} />
     </div>
   );
@@ -255,21 +317,22 @@ const Bomb = () => {
 type GameOverProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
   initialGameState: GameStateType;
-  gameState: GameStateType;
+  setPlayerJoined: React.Dispatch<SetStateAction<boolean>>;
 };
 
 const GameOver = ({
   setGameState,
   initialGameState,
-  gameState,
+  setPlayerJoined,
 }: GameOverProps) => {
   const navigate = useNavigate();
 
   const handleRestartGame = () => {
-    for (let timer of gameState.enemyTimers) {
-      clearTimeout(timer);
+    setGameState({ ...initialGameState, timeStamp: Date.now() });
+    if (sessionStorage.getItem("isMultiplayer") !== null) {
+      setPlayerJoined(false);
+      socket.emit("findRoom");
     }
-    setGameState({ ...initialGameState, enemies: [], timeStamp: Date.now() });
   };
 
   return (

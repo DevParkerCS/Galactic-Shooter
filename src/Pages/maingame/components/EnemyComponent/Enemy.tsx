@@ -2,20 +2,28 @@ import { SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./Enemy.module.scss";
 import { GameStateType } from "../../../../@types/gamestate";
 import { EnemyClass } from "../../../../classes/EnemyClass";
+import { MovementUtils } from "../../../../utils/MovementUtils";
 
 type EnemyProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
+  setEnemies: React.Dispatch<SetStateAction<JSX.Element[]>>;
   EnemyObj: EnemyClass;
   gameState: GameStateType;
 };
 
-export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
+export const Enemy = ({
+  setGameState,
+  gameState,
+  EnemyObj,
+  setEnemies,
+}: EnemyProps) => {
   const [leftPosition, setLeftPosition] = useState(0);
   const enemyRef = useRef<HTMLImageElement>(null);
   const [enemyHealth, setEnemyHealth] = useState<number>(EnemyObj.getHealth);
   const healthRef = useRef<HTMLDivElement>(null);
   let timer = useRef<NodeJS.Timeout>();
   let speedMultiplier = 1;
+  const movementUtils = new MovementUtils();
 
   const calcSpeed = () => {
     if (window.innerHeight <= 480) {
@@ -27,28 +35,27 @@ export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
     EnemyObj.removeHealth = 10;
     setEnemyHealth(enemyHealth - 10);
     if (EnemyObj.getIsBoss && EnemyObj.getHealth % 30 == 0) {
-      generateRandomPosition();
+      setLeftPosition(movementUtils.generateRandPosition);
     }
     if (EnemyObj.getHealth <= 0) {
       clearTimeout(timer.current);
+      setEnemies((prevState) => {
+        return prevState.filter(
+          (enemy) =>
+            enemy.props.EnemyObj.getEnemyIndex != EnemyObj.getEnemyIndex
+        );
+      });
       setGameState((prevState) => {
         return {
           ...prevState,
           score: prevState.score + 100,
           enemiesLeft: prevState.enemiesLeft - 1,
-          enemies: prevState.enemies.filter((enemy) => {
-            return (
-              enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex
-            );
+          enemyTimers: prevState.enemyTimers.filter((e) => {
+            return e != timer.current;
           }),
         };
       });
     }
-  };
-
-  const generateRandomPosition = () => {
-    let positionx = Math.floor(Math.random() * 95);
-    setLeftPosition(positionx);
   };
 
   useEffect(() => {
@@ -56,7 +63,7 @@ export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
   }, [gameState.gameOver]);
 
   useEffect(() => {
-    generateRandomPosition();
+    setLeftPosition(movementUtils.generateRandPosition);
     calcSpeed();
     timer.current = setTimeout(() => {
       setGameState((prevState) => {
@@ -66,15 +73,11 @@ export const Enemy = ({ setGameState, gameState, EnemyObj }: EnemyProps) => {
           enemiesLeft: prevState.enemiesLeft - 1,
         };
       });
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          enemies: prevState.enemies.filter((enemy) => {
-            return (
-              enemy.props.EnemyObj.getEnemyIndex !== EnemyObj.getEnemyIndex
-            );
-          }),
-        };
+      setEnemies((prevState) => {
+        return prevState.filter(
+          (enemy) =>
+            enemy.props.EnemyObj.getEnemyIndex != EnemyObj.getEnemyIndex
+        );
       });
     }, EnemyObj.getSpeed / speedMultiplier);
     gameState.enemyTimers.push(timer.current);

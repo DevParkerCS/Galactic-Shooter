@@ -2,17 +2,23 @@ import { SetStateAction, useEffect, useState } from "react";
 import styles from "./LandingPage.module.scss";
 import { useNavigate } from "react-router-dom";
 import bgMusic from "../../Assets/bgmusic.mp3";
-import axios from "axios";
 import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { ChooseGame } from "./components/ChooseGame";
+import { socket } from "../../socket";
 
 const bgAudio = new Audio(bgMusic);
 
 export const LandingPage = () => {
   const navigate = useNavigate();
   const [isChosen, setIsChosen] = useState(false);
+  const [clickedPlay, setClickedPlay] = useState(false);
 
   useEffect(() => {
+    if (sessionStorage.getItem("isMultiplayer")) {
+      sessionStorage.removeItem("isMultiplayer");
+      socket.emit("leftRoom");
+    }
     if (sessionStorage.getItem("volumeOn") == "true") {
       bgAudio.volume = 0.1;
       bgAudio.loop = true;
@@ -24,6 +30,10 @@ export const LandingPage = () => {
     sessionStorage.removeItem("volumeOn");
   };
 
+  if (clickedPlay) {
+    return <ChooseGame setClickedPlay={setClickedPlay} />;
+  }
+
   return (
     <div className={styles.pageWrapper}>
       {!sessionStorage.getItem("volumeOn") ? (
@@ -34,7 +44,7 @@ export const LandingPage = () => {
       <RotateModal />
       <FullscreenBtn />
       <h1 className={styles.title}>Galactic Shooter</h1>
-      <button className={styles.btn} onClick={() => navigate("/play")}>
+      <button className={styles.btn} onClick={() => setClickedPlay(true)}>
         Play
       </button>
       <button className={styles.btn} onClick={() => navigate("/objective")}>

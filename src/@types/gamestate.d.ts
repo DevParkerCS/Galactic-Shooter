@@ -6,5 +6,4 @@ export type GameStateType = {
   enemiesLeft: number;
   timeStamp: number;
   enemyTimers: Timeout[];
-  enemies: JSX.Element[];
 };
