@@ -9,7 +9,6 @@ import enemyImg3 from "../../Assets/enemies/shipGreen_manned.png";
 import enemyImg4 from "../../Assets/enemies/shipPink_manned.png";
 import enemyImg5 from "../../Assets/enemies/shipYellow_manned.png";
 import bombImg from "../../Assets/bomb64.png";
-import { HighScoreForm } from "./components/HighScoreForm";
 import { GameNav } from "./components/GameNav";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner";
@@ -47,6 +46,7 @@ function MainGame() {
   const [isLoading, setIsLoading] = useState(false);
   const [roundChanged, setRoundChanged] = useState(false);
   const [playerJoined, setPlayerJoined] = useState(false);
+  const [wonGame, setWonGame] = useState(false);
   const gameObj = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -55,9 +55,14 @@ function MainGame() {
   });
 
   socket.on("gameOver", () => {
+    setWonGame(true);
     setGameState((prevState) => {
       return { ...prevState, gameOver: true };
     });
+  });
+
+  socket.on("arrChange", (arr) => {
+    console.log(arr);
   });
 
   const laserClick = () => {
@@ -70,7 +75,6 @@ function MainGame() {
     setGameState((prevState) => {
       return {
         ...prevState,
-        enemies: [],
         enemiesLeft: prevState.round % 5 == 0 ? 1 : 5 * prevState.round,
       };
     });
@@ -150,6 +154,7 @@ function MainGame() {
     // Check if Player is dead
     if (gameState.lives < 0) {
       socket.emit("gameOver");
+      setWonGame(false);
       setGameState((prevState) => {
         return { ...prevState, gameOver: true, enemies: [] };
       });
@@ -215,6 +220,7 @@ function MainGame() {
               setPlayerJoined={setPlayerJoined}
               setGameState={setGameState}
               initialGameState={initialGameState}
+              wonGame={wonGame}
             />
           )}
         </h1>
@@ -318,12 +324,14 @@ type GameOverProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
   initialGameState: GameStateType;
   setPlayerJoined: React.Dispatch<SetStateAction<boolean>>;
+  wonGame: boolean;
 };
 
 const GameOver = ({
   setGameState,
   initialGameState,
   setPlayerJoined,
+  wonGame,
 }: GameOverProps) => {
   const navigate = useNavigate();
 
@@ -337,7 +345,7 @@ const GameOver = ({
 
   return (
     <div>
-      <h1>GAME OVER</h1>
+      <h1>{wonGame ? "YOU WIN!" : "GAME OVER"}</h1>
       <button className={styles.homeBtn}>
         <div className={styles.txt} onClick={() => navigate("/")}>
           Home
