@@ -5,5 +5,6 @@ export type GameStateType = {
   gameOver: boolean;
   enemiesLeft: number;
   timeStamp: number;
+  wonGame: boolean;
   enemyTimers: Timeout[];
 };

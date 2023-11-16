@@ -50,6 +50,7 @@ export const Enemy = ({
           ...prevState,
           score: prevState.score + 100,
           enemiesLeft: prevState.enemiesLeft - 1,
+          timeStamp: Date.now(),
           enemyTimers: prevState.enemyTimers.filter((e) => {
             return e != timer.current;
           }),
@@ -57,10 +58,6 @@ export const Enemy = ({
       });
     }
   };
-
-  useEffect(() => {
-    clearTimeout(timer.current);
-  }, [gameState.gameOver]);
 
   useEffect(() => {
     setLeftPosition(movementUtils.generateRandPosition);
@@ -71,6 +68,7 @@ export const Enemy = ({
           ...prevState,
           lives: prevState.lives - 1,
           enemiesLeft: prevState.enemiesLeft - 1,
+          timeStamp: Date.now(),
         };
       });
       setEnemies((prevState) => {
@@ -80,7 +78,12 @@ export const Enemy = ({
         );
       });
     }, EnemyObj.getSpeed / speedMultiplier);
-    gameState.enemyTimers.push(timer.current);
+    setGameState((prevState) => {
+      return {
+        ...prevState,
+        enemyTimers: [...prevState.enemyTimers, timer.current],
+      };
+    });
   }, []);
 
   return (

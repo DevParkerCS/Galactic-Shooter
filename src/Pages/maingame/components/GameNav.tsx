@@ -14,37 +14,47 @@ type GameNavProps = {
 };
 
 export const GameNav = ({ score, lives, gameState }: GameNavProps) => {
-  const [shownImg, setShownImg] = useState<string>(Life3);
-  const [enemyScore, setEnemyScore] = useState<number>(0);
+  const [livesImg, setlivesImg] = useState<string>(Life3);
+  const [enemyLives, setEnemyLives] = useState<string>(Life3);
   const liveImgs = [Life0, Life1, Life2, Life3];
   const io = socket;
 
-  socket.on("enemyScored", (score) => {
-    setEnemyScore(score);
+  socket.on("enemyLostLife", (enemyLives) => {
+    setEnemyLives(liveImgs[enemyLives]);
   });
 
   useEffect(() => {
+    socket.emit("lifeLost", lives);
     if (lives > 0) {
-      setShownImg(liveImgs[lives]);
+      setlivesImg(liveImgs[lives]);
     } else {
-      setShownImg(liveImgs[0]);
+      setlivesImg(liveImgs[0]);
     }
   }, [lives]);
 
-  useEffect(() => {
-    if (score !== 0) {
-      io.emit("scoreChange", score);
-    }
-  }, [score]);
+  if (sessionStorage.getItem("isMultiplayer") !== null) {
+    return (
+      <div className={styles.GUINav}>
+        <h2>Enemies Left: {gameState.enemiesLeft}</h2>
+        <div className={styles.livesWrapper}>
+          <h2 className={styles.lives}>Enemy Lives: </h2>
+          <img className={styles.livesImg} src={enemyLives}></img>
+        </div>
+        <div className={styles.livesWrapper}>
+          <h2 className={styles.lives}>Your Lives: </h2>
+          <img className={styles.livesImg} src={livesImg}></img>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.GUINav}>
       <h2>Score: {gameState.score}</h2>
-      <h2>Enemy Score: {enemyScore} </h2>
       <h2>Enemies Left: {gameState.enemiesLeft}</h2>
       <div className={styles.livesWrapper}>
         <h2 className={styles.lives}>Lives: </h2>
-        <img className={styles.livesImg} src={shownImg}></img>
+        <img className={styles.livesImg} src={livesImg}></img>
       </div>
     </div>
   );

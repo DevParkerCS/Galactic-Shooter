@@ -1,7 +1,6 @@
 import styles from "./MainGame.module.scss";
 import React, { useState, useRef, useEffect, SetStateAction } from "react";
 import sound from "../../Assets/laser.mp3";
-import axios from "axios";
 import PlayerImg from "../../Assets/DurrrSpaceShip.png";
 import enemyImg1 from "../../Assets/enemies/shipBlue_manned.png";
 import enemyImg2 from "../../Assets/enemies/shipBeige_manned.png";
@@ -34,6 +33,7 @@ function MainGame() {
     gameOver: false,
     enemiesLeft: 5,
     enemyTimers: [],
+    wonGame: false,
     timeStamp: Date.now(),
   };
   const [gameState, setGameState] = useState<GameStateType>({
@@ -46,7 +46,6 @@ function MainGame() {
   const [isLoading, setIsLoading] = useState(false);
   const [roundChanged, setRoundChanged] = useState(false);
   const [playerJoined, setPlayerJoined] = useState(false);
-  const [wonGame, setWonGame] = useState(false);
   const gameObj = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -55,14 +54,17 @@ function MainGame() {
   });
 
   socket.on("gameOver", () => {
-    setWonGame(true);
     setGameState((prevState) => {
-      return { ...prevState, gameOver: true };
+      return {
+        ...prevState,
+        gameOver: true,
+        wonGame: true,
+        timeStamp: Date.now(),
+      };
     });
-  });
-
-  socket.on("arrChange", (arr) => {
-    console.log(arr);
+    for (let timer of gameState.enemyTimers) {
+      clearTimeout(timer);
+    }
   });
 
   const laserClick = () => {
@@ -72,10 +74,12 @@ function MainGame() {
   };
 
   const createEnemies = async () => {
+    console.log(enemies);
     setGameState((prevState) => {
       return {
         ...prevState,
         enemiesLeft: prevState.round % 5 == 0 ? 1 : 5 * prevState.round,
+        timeStamp: Date.now(),
       };
     });
 
@@ -83,7 +87,7 @@ function MainGame() {
       const imgIndex = Math.floor(Math.random() * 5);
       const image = ENEMY_IMAGES[imgIndex];
       setGameState((prevState) => {
-        return { ...prevState, enemiesLeft: 1 };
+        return { ...prevState, enemiesLeft: 1, timeStamp: Date.now() };
       });
       const enemyObj = new EnemyClass(image, 0, 150, 6, 10000, true);
       setEnemies((prevState) => [
@@ -154,37 +158,46 @@ function MainGame() {
     // Check if Player is dead
     if (gameState.lives < 0) {
       socket.emit("gameOver");
-      setWonGame(false);
       setGameState((prevState) => {
-        return { ...prevState, gameOver: true, enemies: [] };
+        return {
+          ...prevState,
+          gameOver: true,
+          enemies: [],
+          wonGame: false,
+          timeStamp: Date.now(),
+        };
       });
-      for (let timer of gameState.enemyTimers) {
-        clearTimeout(timer);
-      }
       // Check if all enemies are dead
     } else if (gameState.enemiesLeft === 0) {
       setGameState((prevState) => {
         return {
           ...prevState,
           round: prevState.round + 1,
+          timeStamp: Date.now(),
         };
       });
       for (let timer of gameState.enemyTimers) {
         clearTimeout(timer);
       }
-      setSpawnables([]);
     }
   }, [gameState.enemiesLeft, gameState.lives]);
 
   useEffect(() => {
     gameOverRef.current = gameState.gameOver;
     if (gameState.gameOver) {
-      if (sessionStorage.getItem("isMultiplayer") !== null) {
+      for (let timer of gameState.enemyTimers) {
+        clearTimeout(timer);
+      }
+      setEnemies([]);
+
+      if (sessionStorage.getItem("isMultiplayer") == null) {
         checkHighScore({ setIsLoading, gameState, setShowForm, showForm });
       }
     } else if (!gameState.gameOver) {
       if (sessionStorage.getItem("isMultiplayer") == null || playerJoined) {
         setRoundChanged(true);
+        setEnemies([]);
+        setSpawnables([]);
         setTimeout(() => {
           setRoundChanged(false);
           createEnemies();
@@ -220,7 +233,7 @@ function MainGame() {
               setPlayerJoined={setPlayerJoined}
               setGameState={setGameState}
               initialGameState={initialGameState}
-              wonGame={wonGame}
+              gameState={gameState}
             />
           )}
         </h1>
@@ -276,6 +289,7 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
       setGameState((prevState) => {
         return {
           ...prevState,
+          timeStamp: Date.now(),
           enemyTimers: prevState.enemyTimers.filter((e) => {
             return e !== timerId.current;
           }),
@@ -285,6 +299,7 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
     setGameState((prevState) => {
       return {
         ...prevState,
+        timeStamp: Date.now(),
         enemyTimers: [...prevState.enemyTimers, timerId.current],
       };
     });
@@ -297,6 +312,7 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
       return {
         ...prevState,
         lives: prevState.lives - 1,
+        timeStamp: Date.now(),
         enemyTimers: prevState.enemyTimers.filter((e) => {
           return e !== timerId.current;
         }),
@@ -324,19 +340,23 @@ type GameOverProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
   initialGameState: GameStateType;
   setPlayerJoined: React.Dispatch<SetStateAction<boolean>>;
-  wonGame: boolean;
+  gameState: GameStateType;
 };
 
 const GameOver = ({
   setGameState,
   initialGameState,
   setPlayerJoined,
-  wonGame,
+  gameState,
 }: GameOverProps) => {
   const navigate = useNavigate();
 
   const handleRestartGame = () => {
-    setGameState({ ...initialGameState, timeStamp: Date.now() });
+    setGameState({
+      ...initialGameState,
+      timeStamp: Date.now(),
+      wonGame: false,
+    });
     if (sessionStorage.getItem("isMultiplayer") !== null) {
       setPlayerJoined(false);
       socket.emit("findRoom");
@@ -345,7 +365,7 @@ const GameOver = ({
 
   return (
     <div>
-      <h1>{wonGame ? "YOU WIN!" : "GAME OVER"}</h1>
+      <h1>{gameState.wonGame ? "YOU WIN!" : "GAME OVER"}</h1>
       <button className={styles.homeBtn}>
         <div className={styles.txt} onClick={() => navigate("/")}>
           Home
