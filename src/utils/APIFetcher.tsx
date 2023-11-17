@@ -16,32 +16,32 @@ export const checkHighScore = async ({
   setShowForm,
   showForm,
 }: CheckHighScoreArgs) => {
-  try {
-    setIsLoading(true);
-    // Gets scores from database
-    const scores = (
-      await axios.get(
-        process.env.REACT_APP_LEADERBOARDAPI || "http://localhost:3000"
-      )
-    ).data;
-    for (let i = 0; i < scores.length; i++) {
-      // Check if the players score is greater than the score at nth place
-      if (gameState.score > scores[i].score) {
-        setShowForm(
-          <HighScoreForm index={i} scores={scores} score={gameState.score} />
-        );
-      }
-    }
-    // If the length of the scores isn't 10 then place the score at the end.
-    if (!showForm && scores.length !== 10) {
+  setIsLoading(true);
+  // Gets scores from database
+  const scores = (
+    await axios
+      .get(process.env.REACT_APP_LEADERBOARDAPI || "http://localhost:3000")
+      .catch(() => {
+        throw new Error();
+      })
+  ).data;
+  for (let i = 0; i < scores.length; i++) {
+    // Check if the players score is greater than the score at nth place
+    if (gameState.score > scores[i].score) {
       setShowForm(
-        <HighScoreForm
-          index={scores.legnth - 1}
-          scores={scores}
-          score={gameState.score}
-        />
+        <HighScoreForm index={i} scores={scores} score={gameState.score} />
       );
     }
-    setIsLoading(false);
-  } catch (e) {}
+  }
+  // If the length of the scores isn't 10 then place the score at the end.
+  if (!showForm && scores.length !== 10) {
+    setShowForm(
+      <HighScoreForm
+        index={scores.legnth - 1}
+        scores={scores}
+        score={gameState.score}
+      />
+    );
+  }
+  setIsLoading(false);
 };

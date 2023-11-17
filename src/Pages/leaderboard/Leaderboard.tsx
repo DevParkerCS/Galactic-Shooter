@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner";
 import { RotateModal } from "../../components/modals/RotateModal";
 import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 
 type ResponseType = {
   data: [LeaderboardType];
@@ -17,14 +18,27 @@ type LeaderboardType = {
 };
 
 export const Leaderboard = () => {
-  let [leaderboard, setLeaderboard] = useState<LeaderboardType[]>();
+  const [leaderboard, setLeaderboard] = useState<LeaderboardType[]>();
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_LEADERBOARDAPI || "http://localhost:3000")
-      .then((res: ResponseType) => setLeaderboard(res.data));
+      .then((res: ResponseType) => setLeaderboard(res.data))
+      .catch(() => {
+        setError(true);
+      });
   }, []);
+
+  if (error) {
+    return (
+      <ErrorPage
+        error={500}
+        errorMsg="There Was An Error Loading The Leaderboard.  Please Check Your Wifi Or Try Again Later"
+      />
+    );
+  }
 
   if (!leaderboard) {
     return <Spinner />;

@@ -17,7 +17,6 @@ export const GameNav = ({ score, lives, gameState }: GameNavProps) => {
   const [livesImg, setlivesImg] = useState<string>(Life3);
   const [enemyLives, setEnemyLives] = useState<string>(Life3);
   const liveImgs = [Life0, Life1, Life2, Life3];
-  const io = socket;
 
   socket.on("enemyLostLife", (enemyLives) => {
     setEnemyLives(liveImgs[enemyLives]);
@@ -35,11 +34,13 @@ export const GameNav = ({ score, lives, gameState }: GameNavProps) => {
   if (sessionStorage.getItem("isMultiplayer") !== null) {
     return (
       <div className={styles.GUINav}>
-        <h2>Enemies Left: {gameState.enemiesLeft}</h2>
         <div className={styles.livesWrapper}>
           <h2 className={styles.lives}>Enemy Lives: </h2>
           <img className={styles.livesImg} src={enemyLives}></img>
         </div>
+
+        <h2>Enemies Left: {gameState.enemiesLeft}</h2>
+
         <div className={styles.livesWrapper}>
           <h2 className={styles.lives}>Your Lives: </h2>
           <img className={styles.livesImg} src={livesImg}></img>

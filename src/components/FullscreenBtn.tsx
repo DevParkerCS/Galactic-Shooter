@@ -8,8 +8,12 @@ export const FullscreenBtn = () => {
 
   const handleClick = () => {
     if (!isFullscreen) {
-      setIsFullscreen(true);
-      document.body.requestFullscreen();
+      try {
+        setIsFullscreen(true);
+        document.body.requestFullscreen();
+      } catch (err) {
+        console.log("Error entering fullscreen", err);
+      }
     } else {
       setIsFullscreen(false);
       document.exitFullscreen();

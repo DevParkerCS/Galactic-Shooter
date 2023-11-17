@@ -20,6 +20,7 @@ import { MovementUtils } from "../../utils/MovementUtils";
 import { v4 as uuid } from "uuid";
 import { socket } from "../../socket";
 import { checkHighScore } from "../../utils/APIFetcher";
+import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -47,6 +48,7 @@ function MainGame() {
   const [roundChanged, setRoundChanged] = useState(false);
   const [playerJoined, setPlayerJoined] = useState(false);
   const gameObj = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   socket.on("playerJoined", () => {
@@ -191,7 +193,16 @@ function MainGame() {
       setEnemies([]);
 
       if (sessionStorage.getItem("isMultiplayer") == null) {
-        checkHighScore({ setIsLoading, gameState, setShowForm, showForm });
+        checkHighScore({
+          setIsLoading,
+          gameState,
+          setShowForm,
+          showForm,
+        }).catch(() => {
+          setError(
+            "There Was An Error Fetching The Leaderboard.  Please Check Your Wifi Or Try Again Later"
+          );
+        });
       }
     } else if (!gameState.gameOver) {
       if (sessionStorage.getItem("isMultiplayer") == null || playerJoined) {
@@ -206,8 +217,27 @@ function MainGame() {
     }
   }, [gameState.round, gameState.gameOver, playerJoined]);
 
+  if (error) {
+    return (
+      <ErrorPage
+        error={500}
+        errorMsg="There Was An Error Loading The Leaderboard.  Please Check Your Wifi Or Try Again Later"
+      />
+    );
+  }
+
   if (sessionStorage.getItem("isMultiplayer") !== null && !playerJoined) {
-    return <Spinner />;
+    return (
+      <div className={`${styles.gameWrapper} ${styles.waitingWrapper}`}>
+        <FullscreenBtn />
+        <RotateModal />
+        <h1 className={styles.waitingTxt}>Waiting For Player To Join</h1>
+        <Spinner />
+        <button onClick={() => navigate("/")} className={styles.waitingBtn}>
+          HOME
+        </button>
+      </div>
+    );
   }
 
   return (

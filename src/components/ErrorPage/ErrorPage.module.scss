@@ -1,0 +1,22 @@
+.errorPage {
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  width: 90vw;
+
+  button {
+    font-size: 3rem;
+    width: 30%;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: width 0.25s ease;
+  }
+
+  button:hover {
+    width: 40%;
+  }
+}
