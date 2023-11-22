@@ -3,24 +3,20 @@ import styles from "./Enemy.module.scss";
 import { GameStateType } from "../../../../@types/gamestate";
 import { EnemyClass } from "../../../../classes/EnemyClass";
 import { MovementUtils } from "../../../../utils/MovementUtils";
+import bossNames from "../../../../bossnames.json";
 
 type EnemyProps = {
   setGameState: React.Dispatch<SetStateAction<GameStateType>>;
   setEnemies: React.Dispatch<SetStateAction<JSX.Element[]>>;
   EnemyObj: EnemyClass;
-  gameState: GameStateType;
 };
 
-export const Enemy = ({
-  setGameState,
-  gameState,
-  EnemyObj,
-  setEnemies,
-}: EnemyProps) => {
+export const Enemy = ({ setGameState, EnemyObj, setEnemies }: EnemyProps) => {
   const [leftPosition, setLeftPosition] = useState(0);
   const enemyRef = useRef<HTMLImageElement>(null);
   const [enemyHealth, setEnemyHealth] = useState<number>(EnemyObj.getHealth);
   const healthRef = useRef<HTMLDivElement>(null);
+  const [bossName, setBossName] = useState("");
   let timer = useRef<NodeJS.Timeout>();
   let speedMultiplier = 1;
   const movementUtils = new MovementUtils();
@@ -48,7 +44,9 @@ export const Enemy = ({
       setGameState((prevState) => {
         return {
           ...prevState,
-          score: prevState.score + 100,
+          score: EnemyObj.getIsBoss
+            ? prevState.score + EnemyObj.getHealth * 10
+            : prevState.score + 100,
           enemiesLeft: prevState.enemiesLeft - 1,
           timeStamp: Date.now(),
           enemyTimers: prevState.enemyTimers.filter((e) => {
@@ -59,9 +57,17 @@ export const Enemy = ({
     }
   };
 
+  const createBossName = () => {
+    if (EnemyObj.getIsBoss) {
+      const bossIndex = Math.floor(Math.random() * bossNames.length - 1);
+      setBossName(bossNames[bossIndex]);
+    }
+  };
+
   useEffect(() => {
     setLeftPosition(movementUtils.generateRandPosition);
     calcSpeed();
+    createBossName();
     timer.current = setTimeout(() => {
       setGameState((prevState) => {
         return {
@@ -89,12 +95,17 @@ export const Enemy = ({
   return (
     <div>
       {EnemyObj.getIsBoss ? (
-        <div className={styles.healthWrapper}>
-          <div
-            className={styles.healthBar}
-            ref={healthRef}
-            style={{ width: (enemyHealth / EnemyObj.getMaxHealth) * 100 + "%" }}
-          ></div>
+        <div>
+          <h1 className={styles.bossName}>{bossName}</h1>
+          <div className={styles.healthWrapper}>
+            <div
+              className={styles.healthBar}
+              ref={healthRef}
+              style={{
+                width: (enemyHealth / EnemyObj.getMaxHealth) * 100 + "%",
+              }}
+            ></div>
+          </div>
         </div>
       ) : (
         ""

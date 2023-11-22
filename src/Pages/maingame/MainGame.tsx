@@ -76,7 +76,6 @@ function MainGame() {
   };
 
   const createEnemies = async () => {
-    console.log(enemies);
     setGameState((prevState) => {
       return {
         ...prevState,
@@ -91,13 +90,19 @@ function MainGame() {
       setGameState((prevState) => {
         return { ...prevState, enemiesLeft: 1, timeStamp: Date.now() };
       });
-      const enemyObj = new EnemyClass(image, 0, 150, 6, 10000, true);
+      const enemyObj = new EnemyClass(
+        image,
+        0,
+        100 * (gameState.round / 5),
+        6,
+        10000,
+        true
+      );
       setEnemies((prevState) => [
         ...prevState,
         <Enemy
           setGameState={setGameState}
           setEnemies={setEnemies}
-          gameState={gameState}
           key={0}
           EnemyObj={enemyObj}
         />,
@@ -140,7 +145,6 @@ function MainGame() {
           <Enemy
             setGameState={setGameState}
             setEnemies={setEnemies}
-            gameState={gameState}
             key={i}
             EnemyObj={EnemyObj}
           />,

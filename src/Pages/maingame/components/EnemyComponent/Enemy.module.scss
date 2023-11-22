@@ -33,15 +33,25 @@
 .healthWrapper {
   width: 60vw;
   height: 1rem;
-  align-self: center;
   border: 2px solid white;
   border-radius: 25px;
   overflow: hidden;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  .healthBar {
+    height: 100%;
+    background-color: red;
+  }
 }
 
-.healthBar {
-  height: 100%;
-  background-color: red;
+.bossName {
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+  pointer-events: none;
+  user-select: none;
 }
 
 @media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {

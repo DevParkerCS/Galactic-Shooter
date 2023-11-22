@@ -17,8 +17,7 @@ export const LandingPage = () => {
   useEffect(() => {
     if (sessionStorage.getItem("isMultiplayer")) {
       sessionStorage.removeItem("isMultiplayer");
-      socket.emit("leftRoom");
-      console.log("hello");
+      socket.disconnect();
     }
     if (sessionStorage.getItem("volumeOn") == "true") {
       bgAudio.volume = 0.1;

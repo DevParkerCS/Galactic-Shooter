@@ -2,7 +2,6 @@
   display: flex;
   color: white;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   background-image: url("../../Assets/stars.jpg");
   height: 100vh;
@@ -10,43 +9,47 @@
   overflow: auto;
 }
 
-.objective {
+.title {
   text-align: center;
   margin: 1rem;
-  font-size: 4rem;
+  font-size: 7rem;
 }
 
 .descriptionTxt {
-  width: 90vw;
+  width: 95vw;
+  font-size: 2rem;
   text-align: center;
 }
 
 .txtWrapper {
-  width: 90vw;
+  width: 95vw;
   display: flex;
 
   .txtSection {
-    margin: 2rem 0;
+    margin: 1rem 0;
   }
 
   .txtTitle {
     text-align: center;
+    font-size: 2.5rem;
   }
 
   .leftTxt {
     width: 50%;
     padding: 0.5rem;
+    font-size: 1.5rem;
   }
 
   .rightTxt {
+    font-size: 1.5rem;
     width: 50%;
     padding: 0.5rem;
   }
 }
 
 .homeBtn {
-  width: 50%;
-  font-size: 2rem;
+  width: 70%;
+  font-size: 3rem;
   border-radius: 25px;
   align-self: center;
   cursor: pointer;
