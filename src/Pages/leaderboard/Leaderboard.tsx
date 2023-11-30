@@ -3,9 +3,9 @@ import axios from "axios";
 import { useState } from "react";
 import styles from "./Leaderboard.module.scss";
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "../../components/Spinner";
-import { RotateModal } from "../../components/modals/RotateModal";
-import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { Spinner } from "../../components/Spinner/Spinner";
+import { RotateModal } from "../../components/modals/RotateModal/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn/FullscreenBtn";
 import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 
 type ResponseType = {

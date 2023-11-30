@@ -8,20 +8,19 @@ import enemyImg3 from "../../Assets/enemies/shipGreen_manned.png";
 import enemyImg4 from "../../Assets/enemies/shipPink_manned.png";
 import enemyImg5 from "../../Assets/enemies/shipYellow_manned.png";
 import bombImg from "../../Assets/bomb64.png";
-import { GameNav } from "./components/GameNav";
+import { GameNav } from "./components/GameNav/GameNav";
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "../../components/Spinner";
+import { Spinner } from "../../components/Spinner/Spinner";
 import { GameStateType } from "../../@types/gamestate";
-import { RotateModal } from "../../components/modals/RotateModal";
-import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { RotateModal } from "../../components/modals/RotateModal/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn/FullscreenBtn";
 import { EnemyClass } from "../../classes/EnemyClass";
-import { Enemy } from "./components/EnemyComponent/Enemy";
+import { Enemy } from "./components/Enemy/Enemy";
 import { MovementUtils } from "../../utils/MovementUtils";
 import { v4 as uuid } from "uuid";
 import { socket } from "../../socket";
 import { checkHighScore } from "../../utils/APIFetcher";
 import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
-import { HighScoreForm } from "./components/HighScoreForm";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -198,17 +197,16 @@ function MainGame() {
       setEnemies([]);
 
       if (sessionStorage.getItem("isMultiplayer") == null) {
-        setShowForm(<HighScoreForm score={gameState.score} />);
-        // checkHighScore({
-        //   setIsLoading,
-        //   gameState,
-        //   setShowForm,
-        //   showForm,
-        // }).catch(() => {
-        //   setError(
-        //     "There Was An Error Fetching The Leaderboard.  Please Check Your Wifi Or Try Again Later"
-        //   );
-        // });
+        checkHighScore({
+          setIsLoading,
+          gameState,
+          setShowForm,
+          showForm,
+        }).catch(() => {
+          setError(
+            "There Was An Error Fetching The Leaderboard.  Please Check Your Wifi Or Try Again Later"
+          );
+        });
       }
     } else if (!gameState.gameOver) {
       if (sessionStorage.getItem("isMultiplayer") == null || playerJoined) {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HighScoreForm } from "../Pages/maingame/components/HighScoreForm";
+import { HighScoreForm } from "../Pages/maingame/components/HighScoreForm/HighScoreForm";
 import { SetStateAction } from "react";
 import { GameStateType } from "../@types/gamestate";
 

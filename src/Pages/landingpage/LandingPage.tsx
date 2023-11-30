@@ -2,8 +2,8 @@ import { SetStateAction, useEffect, useState } from "react";
 import styles from "./LandingPage.module.scss";
 import { useNavigate } from "react-router-dom";
 import bgMusic from "../../Assets/bgmusic.mp3";
-import { RotateModal } from "../../components/modals/RotateModal";
-import { FullscreenBtn } from "../../components/FullscreenBtn";
+import { RotateModal } from "../../components/modals/RotateModal/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn/FullscreenBtn";
 import { ChooseGame } from "./components/ChooseGame";
 import { socket } from "../../socket";
 

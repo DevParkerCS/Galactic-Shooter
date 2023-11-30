@@ -1,11 +1,11 @@
 import styles from "./GameNav.module.scss";
-import Life0 from "../../../Assets/lives/Life0.png";
-import Life1 from "../../../Assets/lives/Life1.png";
-import Life2 from "../../../Assets/lives/Life2.png";
-import Life3 from "../../../Assets/lives/Life3.png";
+import Life0 from "../../../../Assets/lives/Life0.png";
+import Life1 from "../../../../Assets/lives/Life1.png";
+import Life2 from "../../../../Assets/lives/Life2.png";
+import Life3 from "../../../../Assets/lives/Life3.png";
 import { useEffect, useState } from "react";
-import { GameStateType } from "../../../@types/gamestate";
-import { socket } from "../../../socket";
+import { GameStateType } from "../../../../@types/gamestate";
+import { socket } from "../../../../socket";
 
 type GameNavProps = {
   score: number;

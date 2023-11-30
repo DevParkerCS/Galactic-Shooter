@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import styles from "./HighScoreForm.module.scss";
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "../../../components/Spinner";
+import { Spinner } from "../../../../components/Spinner/Spinner";
 import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 

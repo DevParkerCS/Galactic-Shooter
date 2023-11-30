@@ -2,8 +2,8 @@ import { useState, useEffect, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../../socket";
 import styles from "../LandingPage.module.scss";
-import { FullscreenBtn } from "../../../components/FullscreenBtn";
-import { RotateModal } from "../../../components/modals/RotateModal";
+import { FullscreenBtn } from "../../../components/FullscreenBtn/FullscreenBtn";
+import { RotateModal } from "../../../components/modals/RotateModal/RotateModal";
 
 type ChooseGameProps = {
   setClickedPlay: React.Dispatch<SetStateAction<boolean>>;

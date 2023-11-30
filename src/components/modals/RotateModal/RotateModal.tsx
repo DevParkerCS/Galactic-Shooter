@@ -1,5 +1,5 @@
 import styles from "./RotateModal.module.scss";
-import phoneRot from "../../Assets/phonerotate.png";
+import phoneRot from "../../../Assets/phonerotate.png";
 
 export const RotateModal = () => {
   return (

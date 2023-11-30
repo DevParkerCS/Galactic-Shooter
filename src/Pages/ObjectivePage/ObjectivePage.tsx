@@ -1,5 +1,5 @@
-import { FullscreenBtn } from "../../components/FullscreenBtn";
-import { RotateModal } from "../../components/modals/RotateModal";
+import { FullscreenBtn } from "../../components/FullscreenBtn/FullscreenBtn";
+import { RotateModal } from "../../components/modals/RotateModal/RotateModal";
 import styles from "./ObjectivePage.module.scss";
 import { useNavigate } from "react-router-dom";
 
