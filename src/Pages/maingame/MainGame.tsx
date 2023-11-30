@@ -21,6 +21,7 @@ import { v4 as uuid } from "uuid";
 import { socket } from "../../socket";
 import { checkHighScore } from "../../utils/APIFetcher";
 import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
+import { HighScoreForm } from "./components/HighScoreForm";
 
 const LASER_AUDIO = new Audio(sound);
 const ENEMY_IMAGES = [enemyImg1, enemyImg2, enemyImg3, enemyImg4, enemyImg5];
@@ -197,16 +198,17 @@ function MainGame() {
       setEnemies([]);
 
       if (sessionStorage.getItem("isMultiplayer") == null) {
-        checkHighScore({
-          setIsLoading,
-          gameState,
-          setShowForm,
-          showForm,
-        }).catch(() => {
-          setError(
-            "There Was An Error Fetching The Leaderboard.  Please Check Your Wifi Or Try Again Later"
-          );
-        });
+        setShowForm(<HighScoreForm score={gameState.score} />);
+        // checkHighScore({
+        //   setIsLoading,
+        //   gameState,
+        //   setShowForm,
+        //   showForm,
+        // }).catch(() => {
+        //   setError(
+        //     "There Was An Error Fetching The Leaderboard.  Please Check Your Wifi Or Try Again Later"
+        //   );
+        // });
       }
     } else if (!gameState.gameOver) {
       if (sessionStorage.getItem("isMultiplayer") == null || playerJoined) {
@@ -235,8 +237,9 @@ function MainGame() {
       <div className={`${styles.gameWrapper} ${styles.waitingWrapper}`}>
         <FullscreenBtn />
         <RotateModal />
-        <h1 className={styles.waitingTxt}>Waiting For Player To Join</h1>
         <Spinner />
+        <h1 className={styles.waitingTxt}>Waiting For Player To Join</h1>
+        <div className={styles.spacer}></div>
         <button onClick={() => navigate("/")} className={styles.waitingBtn}>
           HOME
         </button>
@@ -311,6 +314,14 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
   const timerId = useRef<NodeJS.Timeout>();
   const [leftPosition, setLeftPosition] = useState(0);
 
+  const calcSpeed = () => {
+    if (window.innerHeight <= 576) {
+      return 1.5;
+    } else {
+      return 1;
+    }
+  };
+
   useEffect(() => {
     setLeftPosition(movementUtils.generateRandPosition());
     timerId.current = setTimeout(() => {
@@ -329,7 +340,7 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
           }),
         };
       });
-    }, 5000);
+    }, 5000 / calcSpeed());
     setGameState((prevState) => {
       return {
         ...prevState,
@@ -365,7 +376,7 @@ const Bomb = ({ setSpawnables, index, setGameState }: BombProps) => {
       style={{ left: leftPosition + "%" }}
       onClick={handleClick}
     >
-      <img src={bombImg} />
+      <img className={styles.bomb} src={bombImg} />
     </div>
   );
 };

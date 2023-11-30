@@ -1,3 +1,5 @@
+import { FullscreenBtn } from "../FullscreenBtn";
+import { RotateModal } from "../modals/RotateModal";
 import styles from "./ErrorPage.module.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +12,8 @@ export const ErrorPage = ({ error, errorMsg }: ErrorPageProps) => {
   const navigate = useNavigate();
   return (
     <div className={styles.errorPage}>
+      <FullscreenBtn />
+      <RotateModal />
       <h1>Uh Oh!</h1>
       <h1>{error}</h1>
       <h2>{errorMsg}</h2>

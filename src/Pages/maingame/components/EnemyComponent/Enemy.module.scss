@@ -9,6 +9,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   transform: rotate(180deg);
+  z-index: 1;
 
   &.enemy0 {
     animation: MoveEnemyDown 6s linear;
@@ -54,7 +55,7 @@
   user-select: none;
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .enemy {
     &.enemy0 {
       animation: MoveEnemyDown calc(6s / 1.5) linear;
@@ -70,6 +71,26 @@
     }
     &.enemy4 {
       animation: MoveEnemyDown calc(4s / 1.5) linear;
+    }
+  }
+}
+
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .enemy {
+    &.enemy0 {
+      animation: MoveEnemyDown calc(6s / 1.4) linear;
+    }
+    &.enemy1 {
+      animation: MoveEnemyDown calc(5.5s / 1.4) linear;
+    }
+    &.enemy2 {
+      animation: MoveEnemyDown calc(5s / 1.4) linear;
+    }
+    &.enemy3 {
+      animation: MoveEnemyDown calc(4.5s / 1.4) linear;
+    }
+    &.enemy4 {
+      animation: MoveEnemyDown calc(4s / 1.4) linear;
     }
   }
 }

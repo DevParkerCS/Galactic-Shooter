@@ -7,6 +7,23 @@
   height: 100vh;
   max-height: 100vh;
   overflow: auto;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: transparent transparent; /* For Firefox */
+  -ms-overflow-style: none; /* For IE 10+ */
+  scrollbar-width: none;
+}
+
+.objectiveWrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.objectiveWrapper::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.objectiveWrapper::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
 }
 
 .title {
@@ -27,6 +44,7 @@
 
   .txtSection {
     margin: 1rem 0;
+    font-size: 1.5rem;
   }
 
   .txtTitle {
@@ -37,11 +55,9 @@
   .leftTxt {
     width: 50%;
     padding: 0.5rem;
-    font-size: 1.5rem;
   }
 
   .rightTxt {
-    font-size: 1.5rem;
     width: 50%;
     padding: 0.5rem;
   }
@@ -61,8 +77,42 @@
   width: 90vw;
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .objectiveWrapper {
     justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 4rem;
+  }
+
+  .descriptionTxt {
+    font-size: 1.5rem;
+  }
+
+  .txtWrapper {
+    .txtSection {
+      font-size: 1rem;
+    }
+  }
+
+  .homeBtn {
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .title {
+    font-size: 5rem;
+  }
+
+  .descriptionTxt {
+    font-size: 2rem;
+  }
+
+  .txtWrapper {
+    .txtSection {
+      font-size: 1.25rem;
+    }
   }
 }

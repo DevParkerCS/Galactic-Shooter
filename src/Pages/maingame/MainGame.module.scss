@@ -1,6 +1,7 @@
 .gameWrapper {
   cursor: url("../../Assets/crosshair.png") 60 60, auto;
   height: 100vh;
+  width: 100vw;
   position: relative;
   background-image: url("../../Assets/stars.jpg");
   overflow: hidden;
@@ -18,7 +19,10 @@
   width: 100vw;
   font-size: 5rem;
   text-align: center;
-  margin-bottom: 10%;
+}
+
+.spacer {
+  height: 10rem;
 }
 
 .waitingBtn {
@@ -40,10 +44,9 @@
   top: 50%;
   right: 125%;
   transform: translate(0, -50%);
-  display: inline-block;
   text-align: center;
   text-wrap: nowrap;
-  pointer-events: none;
+  user-select: none;
 }
 
 .showRound {
@@ -110,18 +113,18 @@
 .bombWrapper {
   position: absolute;
   animation: moveBomb 5s linear;
+  user-select: none;
+  z-index: 0;
+  width: 5%;
+  height: 9%;
 }
 
-@keyframes moveBomb {
-  from {
-    top: 0%;
-  }
-  to {
-    top: 100%;
-  }
+.bomb {
+  width: 100%;
+  height: 100%;
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .player {
     width: 5%;
     height: 6rem;
@@ -133,6 +136,36 @@
     button {
       font-size: 1.2rem;
     }
+  }
+
+  .waitingTxt {
+    font-size: 3rem;
+  }
+
+  .spacer {
+    height: 9rem;
+  }
+
+  .waitingBtn {
+    font-size: 2rem;
+  }
+
+  .bombWrapper {
+    animation: moveBomb calc(5s / 1.5) linear;
+  }
+}
+
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .gameOver {
+    font-size: 2.3rem;
+
+    button {
+      font-size: 1.7rem;
+    }
+  }
+
+  .waitingTxt {
+    font-size: 4rem;
   }
 }
 
@@ -157,5 +190,14 @@
   }
   100% {
     right: -25%;
+  }
+}
+
+@keyframes moveBomb {
+  from {
+    top: 0%;
+  }
+  to {
+    top: 100%;
   }
 }

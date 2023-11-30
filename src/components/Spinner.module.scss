@@ -2,16 +2,22 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  font-size: 4rem;
+  font-size: 5rem;
   font-weight: bold;
   animation: RotateSpinner 1s linear infinite;
 }
 
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
+  .spinner {
+    font-size: 4rem;
+  }
+}
+
 @keyframes RotateSpinner {
   0% {
-    transform: rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }

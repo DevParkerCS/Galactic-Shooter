@@ -2,6 +2,8 @@ import { useState, useEffect, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../../socket";
 import styles from "../LandingPage.module.scss";
+import { FullscreenBtn } from "../../../components/FullscreenBtn";
+import { RotateModal } from "../../../components/modals/RotateModal";
 
 type ChooseGameProps = {
   setClickedPlay: React.Dispatch<SetStateAction<boolean>>;
@@ -24,6 +26,8 @@ export const ChooseGame = ({ setClickedPlay }: ChooseGameProps) => {
 
   return (
     <div className={styles.pageWrapper}>
+      <FullscreenBtn />
+      <RotateModal />
       <button className={styles.btn} onClick={() => navigate("/play")}>
         Single Player
       </button>

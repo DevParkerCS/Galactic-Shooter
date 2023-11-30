@@ -2,12 +2,16 @@ body {
   overflow: hidden;
 }
 
+.entriesWrapper {
+  display: flex;
+}
+
 .leaderboardEntry {
   color: white;
   display: flex;
-  margin-bottom: 0.2rem;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bolder;
+  margin: 0 1rem;
 }
 
 .contentWrapper {
@@ -19,7 +23,7 @@ body {
 
 .title {
   color: white;
-  font-size: 7rem;
+  font-size: 6rem;
   text-decoration: underline;
   position: relative;
   text-align: center;
@@ -35,7 +39,7 @@ body {
 
 .homeBtn {
   width: 70%;
-  font-size: 3rem;
+  font-size: 2rem;
   border-radius: 25px;
   align-self: center;
   cursor: pointer;
@@ -47,22 +51,21 @@ body {
   width: 100%;
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .title {
-    font-size: 2.8rem;
+    font-size: 4rem;
   }
   .leaderboardEntry {
-    font-size: 1rem;
+    font-size: 1.3rem;
     margin: 0 1rem;
   }
 
   .homeBtn {
     width: 100%;
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: 0.5rem;
   }
+}
 
-  .entriesWrapper {
-    display: flex;
-  }
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
 }

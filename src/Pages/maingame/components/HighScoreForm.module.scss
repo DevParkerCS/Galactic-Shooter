@@ -7,6 +7,7 @@
     color: white;
     text-align: center;
     font-size: 5rem;
+    width: 100vw;
   }
   .highscoreForm {
     display: flex;
@@ -23,17 +24,22 @@
     font-size: 8rem;
     letter-spacing: 1rem;
     text-align: center;
+    text-transform: uppercase;
     &::placeholder {
       opacity: 1;
       color: white;
     }
   }
   .formBtn {
-    width: 80%;
+    width: 60%;
     font-size: 2rem;
     border-radius: 25px;
     transition: width 0.15s linear;
     cursor: pointer;
+
+    .spinner {
+      position: relative;
+    }
   }
   .formBtn:hover {
     width: 100%;
@@ -43,19 +49,30 @@
   }
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+.formError {
+  color: white;
+}
+
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .highscoreWrapper {
     .title {
       font-size: 3rem;
-      width: 100vw;
     }
 
     .formInput {
       font-size: 4.5rem;
     }
+  }
+}
 
-    .formBtn {
-      width: 60%;
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .highscoreWrapper {
+    .title {
+      font-size: 4rem;
+    }
+
+    .formInput {
+      font-size: 5.5rem;
     }
   }
 }

@@ -83,14 +83,17 @@ body {
   }
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .pageWrapper {
     .btn {
       width: 75%;
-      font-size: 1.5rem;
+      font-size: 2rem;
+      margin: 0.2rem;
+      padding: 0.5rem;
     }
 
     .title {
+      margin-bottom: 1rem;
       font-size: 4rem;
     }
   }
@@ -106,6 +109,21 @@ body {
 
     .modalMobile {
       display: block;
+    }
+  }
+}
+
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .pageWrapper {
+    .btn {
+      font-size: 2.5rem;
+      margin: 0.5rem;
+      width: 75%;
+    }
+
+    .title {
+      font-size: 5.5rem;
+      margin-bottom: 1rem;
     }
   }
 }

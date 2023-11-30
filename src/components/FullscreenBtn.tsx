@@ -4,19 +4,19 @@ import styles from "./FullscreenBtn.module.scss";
 import { useState } from "react";
 
 export const FullscreenBtn = () => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
   const handleClick = () => {
-    if (!isFullscreen) {
+    if (!document.fullscreenElement) {
       try {
-        setIsFullscreen(true);
         document.body.requestFullscreen();
       } catch (err) {
         console.log("Error entering fullscreen", err);
       }
     } else {
-      setIsFullscreen(false);
-      document.exitFullscreen();
+      try {
+        document.exitFullscreen();
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   return (

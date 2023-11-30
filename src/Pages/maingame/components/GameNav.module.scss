@@ -11,13 +11,21 @@
   position: relative;
 
   .livesWrapper {
+    margin-right: -4rem;
     display: flex;
   }
 }
 
-@media only screen and (min-device-height: 320px) and (max-device-height: 480px) and (orientation: landscape) {
+@media only screen and (max-device-height: 576px) and (orientation: landscape) {
   .GUINav {
     font-size: 1rem;
     max-height: 2rem;
+  }
+}
+
+@media only screen and (min-device-height: 577px) and (max-device-height: 768px) and (orientation: landscape) {
+  .GUINav {
+    font-size: 1.3rem;
+    max-height: 2.5rem;
   }
 }

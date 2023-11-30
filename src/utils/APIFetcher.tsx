@@ -28,20 +28,12 @@ export const checkHighScore = async ({
   for (let i = 0; i < scores.length; i++) {
     // Check if the players score is greater than the score at nth place
     if (gameState.score > scores[i].score) {
-      setShowForm(
-        <HighScoreForm index={i} scores={scores} score={gameState.score} />
-      );
+      setShowForm(<HighScoreForm score={gameState.score} />);
     }
   }
   // If the length of the scores isn't 10 then place the score at the end.
   if (!showForm && scores.length !== 10) {
-    setShowForm(
-      <HighScoreForm
-        index={scores.legnth - 1}
-        scores={scores}
-        score={gameState.score}
-      />
-    );
+    setShowForm(<HighScoreForm score={gameState.score} />);
   }
   setIsLoading(false);
 };

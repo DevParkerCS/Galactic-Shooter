@@ -18,12 +18,15 @@ export const Enemy = ({ setGameState, EnemyObj, setEnemies }: EnemyProps) => {
   const healthRef = useRef<HTMLDivElement>(null);
   const [bossName, setBossName] = useState("");
   let timer = useRef<NodeJS.Timeout>();
-  let speedMultiplier = 1;
   const movementUtils = new MovementUtils();
 
   const calcSpeed = () => {
-    if (window.innerHeight <= 480) {
-      speedMultiplier = 1.5;
+    if (window.innerHeight <= 576) {
+      return 1.5;
+    } else if (window.innerHeight <= 768) {
+      return 1.4;
+    } else {
+      return 1;
     }
   };
 
@@ -66,7 +69,6 @@ export const Enemy = ({ setGameState, EnemyObj, setEnemies }: EnemyProps) => {
 
   useEffect(() => {
     setLeftPosition(movementUtils.generateRandPosition);
-    calcSpeed();
     createBossName();
     timer.current = setTimeout(() => {
       setGameState((prevState) => {
@@ -83,7 +85,7 @@ export const Enemy = ({ setGameState, EnemyObj, setEnemies }: EnemyProps) => {
             enemy.props.EnemyObj.getEnemyIndex != EnemyObj.getEnemyIndex
         );
       });
-    }, EnemyObj.getSpeed / speedMultiplier);
+    }, EnemyObj.getSpeed / calcSpeed());
     setGameState((prevState) => {
       return {
         ...prevState,
