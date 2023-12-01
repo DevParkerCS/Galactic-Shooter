@@ -84,7 +84,7 @@ function MainGame() {
       };
     });
 
-    if (gameState.round % 5 == 0) {
+    if (true) {
       const imgIndex = Math.floor(Math.random() * 5);
       const image = ENEMY_IMAGES[imgIndex];
       setGameState((prevState) => {

@@ -125,5 +125,16 @@ body {
       font-size: 5.5rem;
       margin-bottom: 1rem;
     }
+
+    .volumeModal {
+      text-align: center;
+      .modalTitle {
+        font-size: 3rem;
+      }
+
+      .modalSubTitle {
+        font-size: 2rem;
+      }
+    }
   }
 }

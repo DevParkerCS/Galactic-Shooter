@@ -56,6 +56,15 @@
 }
 
 @media only screen and (max-device-height: 576px) and (orientation: landscape) {
+  .healthWrapper {
+    height: 0.65rem;
+    width: 50vw;
+  }
+
+  .bossName {
+    font-size: 1.5rem;
+  }
+
   .enemy {
     &.enemy0 {
       animation: MoveEnemyDown calc(6s / 1.5) linear;
