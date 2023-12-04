@@ -1,5 +1,7 @@
 # Galactic Shooter
 
+https://galactic-shooter.onrender.com/
+
 Galactic Shooter is an exhilarating 2D React game where players must destory incoming alien invasions by shooting them down before they reach the atmosphere. Featuring real-time multiplayer, a live leaderboard, and an engaging single-player mode, this game offers a thrilling experience for all players.
 
 ## Features
