@@ -10,6 +10,7 @@
   background-repeat: no-repeat;
   transform: rotate(180deg);
   z-index: 1;
+  animation-fill-mode: forwards;
 
   &.enemy0 {
     animation: MoveEnemyDown 6s linear;
@@ -81,6 +82,9 @@
     &.enemy4 {
       animation: MoveEnemyDown calc(4s / 1.5) linear;
     }
+    &.enemy6 {
+      animation: MoveEnemyDown calc(10s / 1.5) linear;
+    }
   }
 }
 
@@ -100,6 +104,9 @@
     }
     &.enemy4 {
       animation: MoveEnemyDown calc(4s / 1.4) linear;
+    }
+    &.enemy6 {
+      animation: MoveEnemyDown calc(10s / 1.4) linear;
     }
   }
 }
